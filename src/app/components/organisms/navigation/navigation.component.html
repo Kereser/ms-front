@@ -1,0 +1,17 @@
+<nav class="navigation">
+	<ul class="navigation__ulist">
+		<li class="navigation__list">
+			<span class="navigation__opt">Create</span>
+			<ul class="navigation__inner-ulist">
+				<li class="navigation__inner-list"><a [routerLink]="['/create', 'brand']">Create Brand</a></li>
+				<li class="navigation__inner-list"><a [routerLink]="['/create', 'category']">Create Category</a></li>
+				<li class="navigation__inner-list"><a [routerLink]="['/create', 'article']">Create Article</a></li>
+			</ul>
+		</li>
+	</ul>
+	<ul class="navigation__ulist">
+		<li class="navigation__list">
+			<a class="navigation__opt" [routerLink]="['/dashboard']">Dashboard</a>
+		</li>
+	</ul>
+</nav>

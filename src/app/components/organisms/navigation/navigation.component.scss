@@ -1,0 +1,103 @@
+@import '../../../styles/variables';
+
+.navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: $white;
+    border-top: 1px solid $white;
+
+    &__ulist {
+        list-style: none;
+        display: flex;
+        padding: 0;
+        margin: 0;
+    }
+
+    &__opt {
+        cursor: pointer;
+        padding: 0px 10px;
+        font-size: $ty-body-s;
+        font-weight: $ty-weight-r;
+        border: none;
+        line-height: $ty-s-lh;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    &__list {
+        position: relative;
+        padding: 0;
+        height: 44px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: -2px;
+            height: 1px;
+            background-color: transparent;
+            transition: background-color 0.3s;
+        }
+
+        &:hover::before {
+            background-color: $purple;
+        }
+
+        &:hover .navigation__inner-ulist {
+            visibility: visible;
+        }
+    }
+
+    &__inner-ulist {
+        visibility: hidden;
+        position: absolute;
+        border-radius: 4px;
+        top: 44px;
+        left: 0;
+        padding: 0;
+        list-style: none;
+        background-color: $white;
+
+        &:hover {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+    }
+
+    &__inner-list {
+        width: 250px;
+        background-color: $bg_light_grey;
+        border: 1px solid $spacer_light;
+
+        a {
+            display: block;
+            padding: 10px 0 10px 10px;
+            cursor: pointer;
+            position: relative;
+            width: fit-content;
+            text-decoration: none;
+            color: inherit;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 10px;
+                right: 0;
+                bottom: 10px;
+                height: 1px;
+                background-color: transparent;
+                transition: background-color 0.3s;
+            }
+
+            &:hover::before {
+                background-color: $box-shadow;
+            }
+        }
+    }
+}
