@@ -1,0 +1,33 @@
+@import '../../../styles/variables';
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 10px;
+  background-color: $white;
+  border-bottom: 1px solid $spacer_light;
+  height: 64px;
+
+  &__logo img {
+    height: 40px;
+  }
+
+  &__search input {
+    border: 1px solid $spacer_light;
+    padding: 12px;
+    width: 200px;
+    border-radius: 2px;
+  }
+
+  &__search input:focus {
+    outline: none;
+    border: 1px solid #9D3FE7;
+  }
+
+  &__sign {
+    app-button {
+      color: white;
+    }
+  }
+}
