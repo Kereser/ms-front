@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ButtonComponent } from './button.component';
 import { By } from '@angular/platform-browser';
-import { Constants } from '../../../utils/Constants';
+import { Consts } from '../../../utils/Constants';
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent;
@@ -25,8 +25,8 @@ describe('ButtonComponent', () => {
   });
 
   it('should have default type and text', () => {
-    expect(component.type).toBe(Constants.BUTTON);
-    expect(component.text).toBe(Constants.DEFAULT_BUTTON);
+    expect(component.type).toBe(Consts.BUTTON);
+    expect(component.text).toBe(Consts.DEFAULT_BUTTON);
   });
 
   it('should render button with correct text', () => {

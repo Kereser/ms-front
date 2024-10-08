@@ -2,12 +2,12 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { ArticleListComponent } from './components/molecules/article-list/article-list.component';
 import { FormCreateComponent } from './components/molecules/form-create/form-create.component';
-import { Constants } from './utils/Constants';
+import {  Consts } from './utils/Constants';
 
 const routes: Routes = [
-  { path: Constants.CREATE_PATH, component: FormCreateComponent },
-  { path: Constants.DASHBOARD_PATH, component: ArticleListComponent },
-  { path: Constants.EMPTY, redirectTo: Constants.REDIRECT_DASHBOARD_PATH, pathMatch: Constants.FULL_PATH }
+  { path: Consts.CREATE_PATH, component: FormCreateComponent },
+  { path: Consts.DASHBOARD_PATH, component: ArticleListComponent },
+  { path: Consts.EMPTY, redirectTo: Consts.REDIRECT_DASHBOARD_PATH, pathMatch: 'full' }
 ];
 
 @NgModule({
