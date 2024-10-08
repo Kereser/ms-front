@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HeaderComponent } from './header.component';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
+import { TestConstants } from '../../../utils/TestConstants';
 
 @Component({
   selector: 'app-button',
@@ -40,7 +41,7 @@ describe('HeaderComponent', () => {
 
   it('should render the logo', () => {
     const logoElement = fixture.debugElement.query(By.css('.header__logo h2')).nativeElement;
-    expect(logoElement.textContent).toBe('Emazon');
+    expect(logoElement.textContent).toBe(TestConstants.EMAZON);
   });
 
   it('should render the search input', () => {
