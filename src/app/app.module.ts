@@ -15,6 +15,8 @@ import { HeaderComponent } from './components/organisms/header/header.component'
 import { NavigationComponent } from './components/organisms/navigation/navigation.component';
 import { FormCreateComponent } from './components/molecules/form-create/form-create.component';
 import { FormTextInputComponent } from './components/atoms/text-input/form-text-input.component';
+import { TableComponent } from './components/molecules/table/table.component';
+import { DashboardComponent } from './components/molecules/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { FormTextInputComponent } from './components/atoms/text-input/form-text-
     FormTextInputComponent,
     HeaderComponent,
     NavigationComponent,
-    FormCreateComponent
+    FormCreateComponent,
+    TableComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
