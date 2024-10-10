@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Constants } from '../../../utils/Constants';
+import { Consts } from '../../../utils/Constants';
 
 @Component({
   selector: 'app-navigation',
@@ -9,5 +9,5 @@ import { Constants } from '../../../utils/Constants';
 export class NavigationComponent {
   showModal = false;
   activeOption: string | null = null;
-  currentEntityType: string = Constants.EMPTY;
+  currentEntityType: string = Consts.EMPTY;
 }
