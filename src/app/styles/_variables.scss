@@ -1,0 +1,47 @@
+$font-family-base: 'Poppins', sans-serif;
+
+// Ppal
+$purple: #9D3FE7;
+$purple_hover: #AE60EB;
+$box-shadow: #3E134D78;
+
+$purple_gradient: 159.13deg, #9D3FE7 -24.13%, #602093 132.21%;
+
+// Gray scale
+$black: #1A141F;
+$hint_text: #4B3A5A;
+$border: #ABA7AF;
+$disabled: #D4D2D5;
+$spacer: #D9D1E0;
+$spacer_light: #E5E0EB;
+$bg_light_grey: #F5F3F7;
+$white: #FFFFFF;
+
+// Informing
+$Error: #D51A52;
+$Attention: #FF9500;
+$Approval: #00B998;
+$Link: #0F0BAB;
+
+// typography
+$ty-body-l: 22px;
+$ty-body-m: 18px;
+$ty-body-s: 16px;
+$ty-body-xs: 14px;
+
+$ty-weight-r: 400;
+
+$ty-s-lh: 23.68px;
+
+// Padding
+$btn-l: (
+    padding: 22px 52px
+);
+
+$btn-m: (
+    padding: 8px 28px
+);
+
+$btn-s: (
+    padding: 4px 12px
+);

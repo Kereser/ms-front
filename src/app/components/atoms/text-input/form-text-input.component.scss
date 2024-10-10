@@ -1,0 +1,31 @@
+@import '../../../styles/variables';
+
+.input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2px 0;
+    margin-bottom: 10px;
+    width: 100%;
+
+    &--input-m {
+        min-width: 163px;
+        height: 44px;
+    }
+
+    &__label {
+        font-size: $ty-body-s;
+        font-weight: 400;
+        margin-bottom: 4px;
+    }
+
+    &__input {
+        border-radius: 2px;
+        border: 1px solid $spacer_light;
+        padding: 12px;
+    }
+
+    &__input:focus {
+        outline: none;
+        border: 1px solid #9D3FE7;
+    }
+}

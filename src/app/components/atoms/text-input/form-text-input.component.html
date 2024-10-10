@@ -1,0 +1,15 @@
+<div class="input-container" [formGroup]="form">
+	<label class="input-container__label" [for]="config.name">{{ config.label }}</label>
+	<input class="input-container__input input-container--input-m" type="text" [formControlName]="config.name"
+		placeholder="Text">
+
+	<div *ngIf="form.get(config.name)?.invalid && (form.get(config.name)?.dirty || form.get(config.name)?.touched)">
+		<small *ngIf="form.get(config.name)?.errors?.['required']">This field is required</small>
+		<small *ngIf="form.get(config.name)?.errors?.['minlength']">Minimum length is {{
+			form.get(config.name)?.errors?.['minlength']?.requiredLength }} characters</small>
+		<small *ngIf="form.get(config.name)?.errors?.['maxlength']">Maximum length is {{
+			form.get(config.name)?.errors?.['maxlength']?.requiredLength }} characters</small>
+		<small *ngIf="form.get(config.name)?.errors?.['email']">Enter a valid email</small>
+		<small *ngIf="form.get(config.name)?.errors?.['pattern']">Invalid format</small>
+	</div>
+</div>

@@ -1,0 +1,10 @@
+<form *ngIf="formFields.length > 0" class="form form--l" [formGroup]="form" (ngSubmit)="onSubmit()">
+  <ng-container *ngFor="let fieldData of formFields">
+    <app-text-input *ngIf="fieldData.type === 'input'" [config]="fieldData" [form]="form">
+    </app-text-input>
+    <select *ngIf="fieldData.type === 'select'" [formControlName]="fieldData.name">
+      <option *ngFor="let option of fieldData.options" [value]="option.value">{{ option.label }}</option>
+    </select>
+  </ng-container>
+  <app-button text="Submit" type="submit" [disabled]="form.invalid"></app-button>
+</form>
