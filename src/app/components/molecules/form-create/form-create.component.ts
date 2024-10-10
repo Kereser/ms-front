@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { Constants, Consts } from '../../../utils/Constants';
+import { Consts } from '../../../utils/Constants';
 
 @Component({
   selector: Consts.FORM_SELECTOR,
