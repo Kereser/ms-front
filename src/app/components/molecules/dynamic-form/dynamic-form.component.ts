@@ -1,8 +1,8 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FormDataService } from 'src/app/shared/helpers/form-data.service';
-import { EntityServiceFactory } from 'src/app/shared/helpers/EntityServiceFactory';
-import { FormField, ValidationConfig, ValidationRules } from 'src/app/utils/Constants';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormDataService } from '../../../shared/helpers/form-data.service';
+import { EntityServiceFactory } from '../../../shared/helpers/EntityServiceFactory';
+import { FormField, ValidationConfig } from '../../../utils/Constants';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -21,7 +21,6 @@ export class DynamicFormComponent implements OnChanges {
       this.form = this.fb.group({});
       this.onFormTypeChange(changes['entityType'].currentValue);
     }
-    console.log('renderizo con type', this.entityType);
   }
 
   onFormTypeChange(type: string) {
@@ -35,14 +34,11 @@ export class DynamicFormComponent implements OnChanges {
 
   onSubmit() {
     const service = this.serviceFactory.getService(this.entityType);
-    console.log(this.form.value);
 
     service.createEntity(this.form.value).subscribe({
-      next: data => {
-        console.log(data);
-      },
-      error: err => {
-        console.log("An error has ocurred.");
+      next: () => {},
+      error: () => {
+        console.log("An error was found while processing createEntity");
       }
     });
 
