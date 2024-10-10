@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Consts } from '../../../utils/Constants';
 
 @Component({
@@ -8,6 +8,6 @@ import { Consts } from '../../../utils/Constants';
 })
 export class ButtonComponent {
   @Input() type: string = Consts.BUTTON;
-  @Input() disabled: boolean = Consts.TRUE;
-  @Input() text: string = Consts.DEFAULT_BUTTON
+  @Input() disabled: boolean = Consts.FALSE;
+  @Input() text: string = Consts.DEFAULT_BUTTON;
 }

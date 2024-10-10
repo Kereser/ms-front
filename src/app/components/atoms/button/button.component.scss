@@ -31,4 +31,9 @@
         font-size: $ty-body-s;
         padding: map-get($btn-s, padding);
     }
+
+    &:disabled {
+        background-color: grey;
+        cursor: not-allowed;
+    }
 }
