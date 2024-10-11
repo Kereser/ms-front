@@ -1,11 +1,11 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-import { IEntityService } from "./IEntityService";
-import { environment } from "../../../environments/environment";
-import { Consts } from "../../utils/Constants";
+import { IEntityService } from "../IEntityService";
+import { environment } from "../../../../environments/environment";
+import { Consts } from "../../../utils/Constants";
 import { CategoryModel } from "src/app/shared/models/CategoryModel";
-import { PageDTO } from "../models/PageDTO";
+import { PageDTO } from "../../models/PageDTO";
 
 
 @Injectable({
