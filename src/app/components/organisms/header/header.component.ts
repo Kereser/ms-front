@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Constants } from '../../../utils/Constants';
+import { Consts } from '../../../utils/Constants';
 
 @Component({
-  selector: Constants.HEADER_SELECTOR,
+  selector: Consts.HEADER_SELECTOR,
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
