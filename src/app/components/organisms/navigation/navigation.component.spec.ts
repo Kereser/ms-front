@@ -1,9 +1,14 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { NavigationComponent } from './navigation.component';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { TestConstants } from '../../../utils/TestConstants';
+import { Constants, TestConstants, TestUtilEnums } from '../../../utils/TestConstants';
+import { Location } from '@angular/common';
+import { Component } from '@angular/core';
+
+@Component({ template: '' })
+class DummyComponent {}
 
 describe('NavigationComponent', () => {
   let component: NavigationComponent;
@@ -12,7 +17,7 @@ describe('NavigationComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule.withRoutes([])],
+      imports: [RouterTestingModule.withRoutes([{ path: 'create/brand', component: DummyComponent }, {path: 'dashboard/brand', component: DummyComponent}])],
       declarations: [NavigationComponent]
     }).compileComponents();
   });
@@ -30,32 +35,37 @@ describe('NavigationComponent', () => {
 
   it('should render Create options', () => {
     const createOptions = fixture.debugElement.queryAll(By.css('.navigation__inner-list a'));
-    expect(createOptions.length).toBe(TestConstants[3]);
-    expect(createOptions[TestConstants[0]].nativeElement.textContent).toBe(TestConstants.CREATE_BRAND);
-    expect(createOptions[TestConstants[1]].nativeElement.textContent).toBe(TestConstants.CREATE_CATEGORY);
-    expect(createOptions[TestConstants[2]].nativeElement.textContent).toBe(TestConstants.CREATE_ARTICLE);
+    expect(createOptions.length).toBe(Constants.SIX);
+    expect(createOptions[Constants.ZERO].nativeElement.textContent).toBe(TestUtilEnums.CREATE_BRAND);
+    expect(createOptions[Constants.ONE].nativeElement.textContent).toBe(TestUtilEnums.CREATE_CATEGORY);
+    expect(createOptions[Constants.TWO].nativeElement.textContent).toBe(TestUtilEnums.CREATE_ARTICLE);
   });
 
-  it('should render Dashboard link', () => {
-    const dashboardLink = fixture.debugElement.query(By.css('.navigation__list a.navigation__opt')).nativeElement;
+  it('should render Dashboard links', () => {
+    const dashboardLink = fixture.debugElement.queryAll(By.css('.navigation__opt'))[1].nativeElement;
     expect(dashboardLink.textContent).toBe(TestConstants.capitalize(TestConstants.DASHBOARD_PATH));
   });
 
-  it('should navigate to Create Category when the link is clicked', async () => {
-    const navigateSpy = jest.spyOn(router, TestConstants.NAVIGATE_BY_URL);
-    const createCategoryLink = fixture.debugElement.queryAll(By.css('.navigation__inner-list a'))[1].nativeElement;
+  it('should navigate to Create Category when the link is clicked', fakeAsync(() => {
+    const location: Location = TestBed.inject(Location);
+    const createCategoryLink = fixture.debugElement.query(By.css('a[href="/create/brand"]')).nativeElement;
+  
     createCategoryLink.click();
-    fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalled();
-    expect(navigateSpy.mock.calls[TestConstants[0]][TestConstants[0]].toString()).toBe(TestConstants.CREATE_CATEGORY_PATH);
-  });
-
-  it('should navigate to Dashboard when the link is clicked', async () => {
-    const navigateSpy = jest.spyOn(router, TestConstants.NAVIGATE_BY_URL);
-    const dashboardLink = fixture.debugElement.query(By.css('.navigation__list a.navigation__opt')).nativeElement;
+    tick();
+    fixture.detectChanges();     
+  
+    expect(location.path()).toBe('/create/brand');
+  }));
+  
+  
+  it('should navigate to Brand dashboard when the link is clicked', fakeAsync (() => {
+    const location: Location = TestBed.inject(Location);
+    const dashboardLink = fixture.debugElement.query(By.css('a[href="/dashboard/brand"]')).nativeElement;
+    
     dashboardLink.click();
-    fixture.detectChanges();
-    expect(navigateSpy).toHaveBeenCalled();
-    expect(navigateSpy.mock.calls[TestConstants[0]][TestConstants[0]].toString()).toBe(TestConstants.REDIRECT_DASHBOARD_PATH);
-  });
+    tick();
+    fixture.detectChanges(); 
+
+    expect(location.path()).toBe('/dashboard/brand');
+  }));
 });

@@ -11,7 +11,12 @@
 	</ul>
 	<ul class="navigation__ulist">
 		<li class="navigation__list">
-			<a class="navigation__opt" [routerLink]="['/dashboard']">Dashboard</a>
+			<span class="navigation__opt">Dashboard</span>
+			<ul class="navigation__inner-ulist">
+				<li class="navigation__inner-list"><a [routerLink]="['/dashboard', 'brand']">Brand dashboard</a></li>
+				<li class="navigation__inner-list"><a [routerLink]="['/dashboard', 'category']">Category dashboard</a></li>
+				<li class="navigation__inner-list"><a [routerLink]="['/dashboard', 'article']">Article dashboard</a></li>
+			</ul>
 		</li>
 	</ul>
 </nav>
