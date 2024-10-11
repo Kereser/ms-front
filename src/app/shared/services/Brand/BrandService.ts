@@ -22,7 +22,8 @@ export class BrandService implements IEntityService {
     return this.http.post(this.baseURL, brand);
   }
 
-  getEntityPage(page: number, pageSize: number, column: string, direction: string): Observable<PageDTO<ArticleModel | CategoryModel | BrandModel>> {
-    throw new Error("Method not implemented.");
+  getEntityPage(page: number, pageSize: number, column: string, direction: string): Observable<PageDTO<BrandModel>> {
+    direction = direction.toUpperCase();
+    return this.http.get<PageDTO<BrandModel>>(this.baseURL, {params: {page, pageSize, column, direction}});
   }
 }
