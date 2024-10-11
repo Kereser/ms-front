@@ -1,0 +1,10 @@
+<div class="dropdown" (click)="toggleDropdown()">
+    <span class="dropdown__span" [ngClass]="{ 'selected': selectedOption }">
+        {{selectedOption || 'Choose an option' }}
+    </span>
+    <div *ngIf="dropdownOpen" class="options">
+        <div class="option" *ngFor="let option of optionList" (click)="selectOption(option, $event)">
+            {{ option }}
+        </div>
+    </div>
+</div>
