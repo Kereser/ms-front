@@ -18,6 +18,7 @@ export const Consts = {
 	CATEGORY: 'category',
 	CATEGORIES: 'Categories',
 	BRAND: 'Brand',
+	ARTICLE: 'Article',
 	BRAND_NAME: 'Brand name',
 	PRICE: 'Price',
 
@@ -39,8 +40,10 @@ export const Consts = {
 
 	CREATE_PATH: 'create/:type',
 	DASHBOARD_PATH: 'dashboard',
+	INVIDIVUAL_DASHBOARD_PATH: 'dashboard/:type',
 	REDIRECT_DASHBOARD_PATH: '/dashboard',
 	CATEGORIES_PATH: '/categories',
+	BRAND_PATH: '/brands',
 	ARTICLES_PATH: '/articles',
 	
 	EMPTY: '',
