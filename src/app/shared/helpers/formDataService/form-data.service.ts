@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ValidatorFn } from '@angular/forms';
-import { Constants, EntityFields, FormField, ValidationConfig, Validations } from '../../utils/Constants';
+import { Constants, EntityFields, FormField, ValidationConfig, Validations } from '../../../utils/Constants';
 
 @Injectable({
   providedIn: 'root'
