@@ -2,8 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { DynamicFormComponent } from './dynamic-form.component';
-import { FormDataService } from '../../../shared/helpers/form-data.service';
-import { EntityServiceFactory } from '../../../shared/helpers/EntityServiceFactory';
+import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
+import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { Consts } from '../../../utils/Constants';
 

@@ -1,7 +1,7 @@
 import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormDataService } from '../../../shared/helpers/form-data.service';
-import { EntityServiceFactory } from '../../../shared/helpers/EntityServiceFactory';
+import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
+import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { FormField, ValidationConfig } from '../../../utils/Constants';
 
 @Component({

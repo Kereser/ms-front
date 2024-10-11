@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FormDataService } from './form-data.service';
-import { Consts, EntityFields, ValidationConfig, Validations } from '../../utils/Constants';
+import { Consts, EntityFields, ValidationConfig, Validations } from '../../../utils/Constants';
 import { ValidatorFn } from '@angular/forms';
 
 describe('FormDataService', () => {
