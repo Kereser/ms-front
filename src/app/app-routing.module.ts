@@ -6,7 +6,7 @@ import { DashboardComponent } from './components/molecules/dashboard/dashboard.c
 
 const routes: Routes = [
   { path: Consts.CREATE_PATH, component: FormCreateComponent },
-  { path: Consts.DASHBOARD_PATH, component: DashboardComponent },
+  { path: Consts.INVIDIVUAL_DASHBOARD_PATH, component: DashboardComponent },
   { path: Consts.EMPTY, redirectTo: Consts.REDIRECT_DASHBOARD_PATH, pathMatch: 'full' }
 ];
 
