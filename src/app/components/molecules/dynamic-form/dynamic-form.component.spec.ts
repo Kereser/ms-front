@@ -1,11 +1,12 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { DynamicFormComponent } from './dynamic-form.component';
 import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
 import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { Consts } from '../../../utils/Constants';
+import { Consts, ToastTypes } from '../../../utils/Constants';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 describe('DynamicFormComponent', () => {
   let component: DynamicFormComponent;
@@ -13,8 +14,13 @@ describe('DynamicFormComponent', () => {
   let formDataServiceMock: any;
   let entityServiceFactoryMock: any;
   let entityServiceMock: any;
+  let toastService: ToastService;
 
   beforeEach(async () => {
+    const toastServiceMock = {
+      show: jest.fn(),
+    };
+
     formDataServiceMock = {
       getFormConfiguration: jest.fn(),
       getValidationsForFieldOnEntity: jest.fn()
@@ -33,14 +39,18 @@ describe('DynamicFormComponent', () => {
       imports: [ ReactiveFormsModule ],
       providers: [
         { provide: FormDataService, useValue: formDataServiceMock },
-        { provide: EntityServiceFactory, useValue: entityServiceFactoryMock }
+        { provide: EntityServiceFactory, useValue: entityServiceFactoryMock },
+        { provide: ToastService, useValue: toastServiceMock}
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
     }).compileComponents();
+  });
 
+  beforeEach(() => {
+    toastService = TestBed.inject(ToastService);
     fixture = TestBed.createComponent(DynamicFormComponent);
     component = fixture.componentInstance;
-  });
+  })
 
   it('should create', () => {
     expect(component).toBeTruthy();
@@ -85,10 +95,9 @@ describe('DynamicFormComponent', () => {
   });
   
 
-  it('should handle error on submit', () => {
-    const error = new Error('An error has occurred.');
+  it('should handle error on submit', fakeAsync (() => {
+    const error = { error: { message: Consts.ERROR_ON_CREATE_ENTITY } };
     entityServiceMock.createEntity.mockReturnValue(throwError(() => error));
-    console.log = jest.fn();
 
     component.entityType = Consts.TEST_ENTITY;
     component.form = new FormGroup({});
@@ -99,9 +108,10 @@ describe('DynamicFormComponent', () => {
     fixture.detectChanges();
 
     component.onSubmit();
+    tick();
 
-    expect(console.log).toHaveBeenCalledWith('An error was found while processing createEntity');
-  });
+    expect(toastService.show).toHaveBeenCalledWith(ToastTypes.DANGER, Consts.ERROR_ON_CREATE_ENTITY);
+  }));
 
   it('should reset the form on submit', () => {
     component.entityType = Consts.TEST_ENTITY;

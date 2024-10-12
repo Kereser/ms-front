@@ -2,7 +2,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
 import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
-import { FormField, ValidationConfig } from '../../../utils/Constants';
+import { Consts, FormField, ToastTypes, ValidationConfig } from '../../../utils/Constants';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -14,7 +15,10 @@ export class DynamicFormComponent implements OnChanges {
   form!: FormGroup;
   formFields: FormField[] = [];
 
-  constructor(private fb: FormBuilder, private formDataService: FormDataService, private serviceFactory: EntityServiceFactory) {}
+  constructor(private fb: FormBuilder, 
+    private formDataService: FormDataService, 
+    private serviceFactory: EntityServiceFactory,
+    private toastService: ToastService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['entityType']) {
@@ -36,9 +40,11 @@ export class DynamicFormComponent implements OnChanges {
     const service = this.serviceFactory.getService(this.entityType);
 
     service.createEntity(this.form.value).subscribe({
-      next: () => {},
-      error: () => {
-        console.log("An error was found while processing createEntity");
+      next: () => {
+        this.toastService.show(ToastTypes.SUCCESS, this.entityType + ' ' + Consts.CREATED)
+      },
+      error: (ex) => {
+        this.toastService.show(ToastTypes.DANGER, ex.error.message);
       }
     });
 
