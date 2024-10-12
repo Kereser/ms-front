@@ -16,6 +16,8 @@ import { FormCreateComponent } from './components/molecules/form-create/form-cre
 import { FormTextInputComponent } from './components/atoms/text-input/form-text-input.component';
 import { TableComponent } from './components/molecules/table/table.component';
 import { DashboardComponent } from './components/molecules/dashboard/dashboard.component';
+import { NakedButtonComponent } from './components/atoms/naked-button/naked-button.component';
+import { ToastComponent } from './components/atoms/toast/toast.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { DashboardComponent } from './components/molecules/dashboard/dashboard.c
     NavigationComponent,
     FormCreateComponent,
     TableComponent,
-    DashboardComponent
+    DashboardComponent,
+    NakedButtonComponent,
+    ToastComponent
   ],
   imports: [
     BrowserModule,
