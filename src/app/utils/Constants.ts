@@ -23,6 +23,7 @@ export const Consts = {
 	PRICE: 'Price',
 
 	TEST: 'test',
+	CREATED: 'Created',
 	
 	DEFAULT_DATE: '2024-06-08',
 
@@ -72,6 +73,9 @@ export const Consts = {
 	FIFTY: 50,
   NINETY: 90,
   ONE_HUNDRED_TWENTY: 120,
+	THREE_THOUSAND: 3000,
+
+	ERROR_ON_CREATE_ENTITY: 'An error was found while processing createEntity',
 }
 
 export enum Direcitons {
@@ -183,4 +187,10 @@ export const article2: ArticleModel = {
 	updatedAt: new Date(Consts.DEFAULT_DATE), 
 	categories: [categoryArticle1], 
 	brand: brandArticle1 
+}
+
+export enum ToastTypes {
+  INFO = 'info',
+  SUCCESS = 'success',
+  DANGER = 'danger',
 }
