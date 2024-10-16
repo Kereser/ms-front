@@ -15,10 +15,10 @@ export class DynamicFormComponent implements OnChanges {
   form!: FormGroup;
   formFields: FormField[] = [];
 
-  constructor(private fb: FormBuilder, 
-    private formDataService: FormDataService, 
+  constructor(private fb: FormBuilder,
+    private formDataService: FormDataService,
     private serviceFactory: EntityServiceFactory,
-    private toastService: ToastService) {}
+    private toastService: ToastService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['entityType']) {
@@ -29,26 +29,34 @@ export class DynamicFormComponent implements OnChanges {
 
   onFormTypeChange(type: string) {
     this.formFields = this.formDataService.getFormConfiguration(type);
-    
+
     this.formFields.forEach(field => {
       const validators = this.formDataService.getValidationsForFieldOnEntity(type as keyof ValidationConfig, field.name);
-      this.form.addControl(field.name, this.fb.control(field.value || '', validators));
+      this.form.addControl(field.name, this.fb.control(field.value ?? '', validators));
     });
   }
 
   onSubmit() {
     const service = this.serviceFactory.getService(this.entityType);
+    const trimmedValues = this.trimFormValues(this.form.value);
 
-    service.createEntity(this.form.value).subscribe({
+    service.createEntity(trimmedValues).subscribe({
       next: () => {
         this.toastService.show(ToastTypes.SUCCESS, this.entityType + ' ' + Consts.CREATED)
+        this.resetFields();
       },
       error: (ex) => {
-        this.toastService.show(ToastTypes.DANGER, ex.error.message);
+        this.toastService.show(ToastTypes.DANGER, ex.message);
       }
     });
+  }
 
-    this.resetFields();
+  private trimFormValues(formValue: any): any {
+    const trimmedValues: any = {};
+    for (const key in formValue) {
+      trimmedValues[key] = formValue[key].trim();
+    }
+    return trimmedValues;
   }
 
   private resetFields() {
