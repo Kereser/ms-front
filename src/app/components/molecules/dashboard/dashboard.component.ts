@@ -3,17 +3,22 @@ import { Subscription } from 'rxjs';
 import { Consts } from '../../../utils/Constants';
 import { ActivatedRoute } from '@angular/router';
 
-
 const headersByType: any = {
-  'article': ['Name', 'Description', 'Price', 'Quantity', 'Categories', 'Brand'],
-  'brand': ['Name', 'Description'],
-  'category': ['Name', 'Description'],
+  'article': ['name',
+    'description', 
+    'price', 
+    'quantity',
+    'categories', 
+    'brand'
+  ],
+  'brand': ['name', 'description'],
+  'category': ['name', 'description'],
 }
 
 const clickeableHeadersByType: any = {
-  'article': ['Name', 'Categories', 'Brand'],
-  'brand': ['Name'],
-  'category': ['Name'],
+  'article': ['name', 'categories', 'description'],
+  'brand': ['name'],
+  'category': ['name'],
 }
 
 @Component({
@@ -32,10 +37,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.routeSub = this.route.paramMap.subscribe(param => {
-      this.entityType = param.get(Consts.TYPE) || Consts.EMPTY;
+      this.entityType = param.get(Consts.TYPE) ?? Consts.EMPTY;
+      this.entityHeaders = headersByType[this.entityType];
+      this.clickableHeaders = clickeableHeadersByType[this.entityType];
     });
-    this.entityHeaders = headersByType[this.entityType];
-    this.clickableHeaders = clickeableHeadersByType[this.entityType];
   }
 
   ngOnDestroy(): void {

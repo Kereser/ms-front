@@ -15,12 +15,6 @@ describe('FormDataService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should capitalize the first letter of a word', () => {
-    const word = Consts.TEST;
-    const capitalizedWord = service['capitalize'](word);
-    expect(capitalizedWord).toBe('Test');
-  });
-
   it('should generate form configuration with labels capitalized and values empty', () => {
     const fields: EntityFields[] = [
       { name: Consts.TEST_FIELD, type: Consts.TYPE_INPUT },
@@ -28,8 +22,8 @@ describe('FormDataService', () => {
     ];
     const generatedConfig = service['generateFormConfiguration'](fields);
     expect(generatedConfig).toEqual([
-      { name: Consts.TEST_FIELD, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.TEST_FIELD_CAPI } as any,
-      { name: Consts.NAME, type: Consts.TYPE_SELECT, value: Consts.EMPTY, label: Consts.NAME_CAPI } as any
+      { name: Consts.TEST_FIELD, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.TEST_FIELD } as any,
+      { name: Consts.NAME, type: Consts.TYPE_SELECT, value: Consts.EMPTY, label: Consts.NAME } as any
     ]);
   });
 
@@ -48,8 +42,8 @@ describe('FormDataService', () => {
   it('should get form configuration for a given type', () => {
     const result = service.getFormConfiguration(Consts.CATEGORY);
     expect(result).toEqual([
-      { name: Consts.NAME, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.NAME_CAPI } as any,
-      { name: Consts.DESCRIPTION, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.DESCRIPTION_CAPI }
+      { name: Consts.NAME, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.NAME } as any,
+      { name: Consts.DESCRIPTION, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.DESCRIPTION }
     ]);
   });
 

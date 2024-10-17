@@ -4,7 +4,7 @@ import { CategoryService } from './CategoryService';
 import { PageDTO, Pageable } from '../../models/PageDTO';
 import { CategoryModel } from '../../models/CategoryModel';
 import { environment } from '../../../../environments/environment';
-import { category1, category2, Consts } from '../../../utils/Constants';
+import { category1, category2, Consts, Direcitons } from '../../../utils/Constants';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -62,7 +62,7 @@ describe('CategoryService', () => {
       ]
     };
 
-    service.getEntityPage(0, 2, 'name', 'asc').subscribe((response: any) => {
+    service.getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC).subscribe((response: any) => {
       expect(response).toEqual(mockResponse);
     });
 
@@ -74,17 +74,39 @@ describe('CategoryService', () => {
   it('should handle HTTP errors correctly', () => {
     const errorResponse = { status: 404, statusText: 'Not Found' };
 
-    service.getEntityPage(0, 2, 'name', 'asc').subscribe(
-      () => fail('should have failed with 404 error'),
-      (error: any) => {
+    service.getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC).subscribe({
+      next: () => fail('should have failed with 404 error'),
+      error: (error: any) => {
         expect(error.status).toEqual(404);
         expect(error.statusText).toEqual('Not Found');
-      }
-    );
+      }});
 
     const req = httpMock.expectOne(`${environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH}?page=0&pageSize=2&column=name&direction=ASC`);
     expect(req.request.method).toBe('GET');
 
     req.flush(null, errorResponse);
+  });
+
+  it('should get category by names', (done) => {
+    const baseURL = environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH;
+    const byNameURL = baseURL + Consts.BY_NAMES_PATH;
+
+    const mockedReponse: CategoryModel[] = [{
+      id: 1,
+      name: 'anyName',
+      description: 'anything',
+    }]
+    
+    service.getByNames('anyName').subscribe({
+      next: (response) => {
+        expect(response).toBe(mockedReponse);
+        done();
+      },
+      error: (err) => done.fail('expected a successful response, not an error: ' + err)
+    });
+
+    const req = httpMock.expectOne(`${byNameURL}?names=anyName`);
+    expect(req.request.method).toBe('GET');
+    req.flush(mockedReponse, {});
   });
 });

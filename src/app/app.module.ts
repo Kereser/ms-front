@@ -14,8 +14,11 @@ import { HeaderComponent } from './components/organisms/header/header.component'
 import { NavigationComponent } from './components/organisms/navigation/navigation.component';
 import { FormCreateComponent } from './components/molecules/form-create/form-create.component';
 import { FormTextInputComponent } from './components/atoms/text-input/form-text-input.component';
-import { TableComponent } from './components/molecules/table/table.component';
+import { TableComponent } from './components/organisms/table/table.component';
 import { DashboardComponent } from './components/molecules/dashboard/dashboard.component';
+import { NakedButtonComponent } from './components/atoms/naked-button/naked-button.component';
+import { ToastComponent } from './components/atoms/toast/toast.component';
+import { CapitalizePipe } from './shared/pipes/capitalize.pipe';
 
 @NgModule({
   declarations: [
@@ -30,13 +33,16 @@ import { DashboardComponent } from './components/molecules/dashboard/dashboard.c
     NavigationComponent,
     FormCreateComponent,
     TableComponent,
-    DashboardComponent
+    DashboardComponent,
+    NakedButtonComponent,
+    ToastComponent,
+    CapitalizePipe
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

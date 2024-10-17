@@ -1,0 +1,10 @@
+.naked-button {
+  border: none;
+  background-color: inherit;
+  cursor: pointer;
+  color: inherit;
+
+  &:hover {
+    background-color: inherit;
+  }
+}

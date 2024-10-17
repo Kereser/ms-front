@@ -2,7 +2,8 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
 import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
-import { FormField, ValidationConfig } from '../../../utils/Constants';
+import { Consts, FormField, ToastTypes, ValidationConfig } from '../../../utils/Constants';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -14,7 +15,10 @@ export class DynamicFormComponent implements OnChanges {
   form!: FormGroup;
   formFields: FormField[] = [];
 
-  constructor(private fb: FormBuilder, private formDataService: FormDataService, private serviceFactory: EntityServiceFactory) {}
+  constructor(private fb: FormBuilder,
+    private formDataService: FormDataService,
+    private serviceFactory: EntityServiceFactory,
+    private toastService: ToastService) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['entityType']) {
@@ -25,24 +29,35 @@ export class DynamicFormComponent implements OnChanges {
 
   onFormTypeChange(type: string) {
     this.formFields = this.formDataService.getFormConfiguration(type);
-    
+
     this.formFields.forEach(field => {
       const validators = this.formDataService.getValidationsForFieldOnEntity(type as keyof ValidationConfig, field.name);
-      this.form.addControl(field.name, this.fb.control(field.value || '', validators));
+      this.form.addControl(field.name, this.fb.control(field.value ?? '', validators));
     });
   }
 
   onSubmit() {
     const service = this.serviceFactory.getService(this.entityType);
+    const trimmedValues = this.trimFormValues(this.form.value);
 
-    service.createEntity(this.form.value).subscribe({
-      next: () => {},
-      error: () => {
-        console.log("An error was found while processing createEntity");
+    service.createEntity(trimmedValues).subscribe({
+      next: () => {
+        this.toastService.show(ToastTypes.SUCCESS, this.entityType + ' ' + Consts.CREATED)
+        this.resetFields();
+      },
+      error: (ex) => {
+        ex = ex.error ?? ex;
+        this.toastService.show(ToastTypes.DANGER, ex.message);
       }
     });
+  }
 
-    this.resetFields();
+  private trimFormValues(formValue: any): any {
+    const trimmedValues: any = {};
+    for (const key in formValue) {
+      trimmedValues[key] = formValue[key].trim();
+    }
+    return trimmedValues;
   }
 
   private resetFields() {
