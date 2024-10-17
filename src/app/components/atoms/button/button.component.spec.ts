@@ -30,23 +30,23 @@ describe('ButtonComponent', () => {
   });
 
   it('should render button with correct text', () => {
-    component.text = 'Custom txt';
+    component.text = Consts.CUSTOM_TXT;
     fixture.detectChanges();
-    const buttonElement = fixture.debugElement.query(By.css('button'));
-    expect(buttonElement.nativeElement.textContent.trim()).toBe('Custom txt');
+    const buttonElement = fixture.debugElement.query(By.css(Consts.BUTTON));
+    expect(buttonElement.nativeElement.textContent.trim()).toBe(Consts.CUSTOM_TXT);
   });
 
   it('should have correct type attribute', () => {
-    component.type = 'submit';
+    component.type = Consts.SUBMIT;
     fixture.detectChanges();
-    const buttonElement = fixture.debugElement.query(By.css('button'));
-    expect(buttonElement.attributes['type']).toBe('submit');
+    const buttonElement = fixture.debugElement.query(By.css(Consts.BUTTON));
+    expect(buttonElement.attributes['type']).toBe(Consts.SUBMIT);
   });
 
   it('should have disabled attribute if disabled is true', () => {
     component.disabled = true;
     fixture.detectChanges();
-    const buttonElement = fixture.debugElement.query(By.css('button')).nativeElement;
+    const buttonElement = fixture.debugElement.query(By.css(Consts.BUTTON)).nativeElement;
     expect(buttonElement.getAttribute('disabled')).toBe('');
   });
 });

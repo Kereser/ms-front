@@ -17,7 +17,7 @@ export class FormCreateComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.routeSub = this.route.paramMap.subscribe(param => {
-      this.entityType = param.get(Consts.TYPE) || Consts.EMPTY;
+      this.entityType = param.get(Consts.TYPE) ?? Consts.EMPTY;
     });
   }
 

@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
   let fixture: ComponentFixture<DashboardComponent>;
-  let activatedRoute: ActivatedRoute;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -30,7 +29,6 @@ describe('DashboardComponent', () => {
       ]
     }).compileComponents();
 
-    activatedRoute = TestBed.inject(ActivatedRoute);
     fixture = TestBed.createComponent(DashboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

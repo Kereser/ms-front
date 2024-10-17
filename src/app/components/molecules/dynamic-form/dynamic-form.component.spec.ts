@@ -73,9 +73,8 @@ describe('DynamicFormComponent', () => {
     component.entityType = Consts.TEST_ENTITY;
     component.form = new FormGroup({});
     component.form.addControl(Consts.NAME, component['fb'].control(Consts.TEST_ENTITY));
-    fixture.detectChanges();
 
-    const formValue = { name: Consts.TEST_ENTITY };
+    const formValue = { [Consts.NAME]: Consts.TEST_ENTITY };
 
     component.onSubmit();
 
@@ -92,7 +91,7 @@ describe('DynamicFormComponent', () => {
     component.entityType = Consts.TEST_ENTITY;
     component.form = new FormGroup({});
     component.form.addControl(Consts.NAME, component['fb'].control(Consts.TEST_ENTITY));
-    
+
     component.onSubmit();
 
     expect(toastService.show).toHaveBeenCalledWith(ToastTypes.DANGER, Consts.ERROR_ON_CREATE_ENTITY);

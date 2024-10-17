@@ -46,6 +46,7 @@ export class DynamicFormComponent implements OnChanges {
         this.resetFields();
       },
       error: (ex) => {
+        ex = ex.error ?? ex;
         this.toastService.show(ToastTypes.DANGER, ex.message);
       }
     });

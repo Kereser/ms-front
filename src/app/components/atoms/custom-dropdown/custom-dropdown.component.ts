@@ -13,8 +13,6 @@ export class CustomDropdownComponent implements OnInit {
 
   @Output() optionSelected = new EventEmitter<string>();
 
-  constructor() { }
-
   ngOnInit(): void { 
     this.selectedOption = this.optionList[0];
   }

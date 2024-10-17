@@ -6,10 +6,10 @@ import { ToastTypes } from '../../../utils/Constants';
   providedIn: 'root'
 })
 export class ToastService {
-  private toastSubject = new Subject<{type: ToastTypes, msg: string}>();
+  private toastSubject = new Subject<{ type: ToastTypes, msg: string }>();
   toastState$ = this.toastSubject.asObservable();
 
   show(type: ToastTypes, msg: string) {
-    this.toastSubject.next({type, msg});
+    this.toastSubject.next({ type, msg });
   }
 }
