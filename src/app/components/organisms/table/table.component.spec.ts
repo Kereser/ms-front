@@ -10,6 +10,8 @@ import { Consts, Direcitons } from '../../../utils/Constants';
 import { Pageable, PageDTO } from 'src/app/shared/models/PageDTO';
 import { CategoryModel } from 'src/app/shared/models/CategoryModel';
 import { BrandModel } from 'src/app/shared/models/BrandModel';
+import { Model } from 'src/app/shared/services/IEntityService';
+import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -30,7 +32,7 @@ describe('TableComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      declarations: [TableComponent],
+      declarations: [TableComponent, CapitalizePipe],
       providers: [
         { provide: EntityServiceFactory, useValue: entityServiceFactoryMock }
       ],
@@ -129,7 +131,7 @@ describe('TableComponent', () => {
       first: true,
       last: true, 
       content: [] 
-    } as PageDTO<ArticleModel | CategoryModel | BrandModel>;
+    } as PageDTO<Model>;
 
     const result = component.getMiddleRange();
     expect(result).toEqual([0, 1, 2, 3, '...', 9]);

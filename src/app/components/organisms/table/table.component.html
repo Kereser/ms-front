@@ -5,14 +5,15 @@
 </div>
 
 <table class="dynamic-table">
+  <caption>{{entityName | capitalize }} table</caption>
   <thead>
     <tr>
       <th *ngFor="let header of headers" [class.clickable]="clickableHeaders.includes(header.toLowerCase())"
         (click)="clickableHeaders.includes(header.toLowerCase()) && onSort(header.toLowerCase())">
-        {{ header }}
-        <span *ngIf="clickableHeaders.includes(header.toLowerCase())">
+        {{ header | capitalize }}
+        <app-naked-button *ngIf="clickableHeaders.includes(header.toLowerCase())">
           {{ direction === 'asc' ? '▲' : '▼' }}
-        </span>
+        </app-naked-button>
       </th>
     </tr>
   </thead>
@@ -23,21 +24,23 @@
   </tbody>
 </table>
 <div class="pagination">
-  <span class="pagination__arrow pagination__arrow--first" *ngIf="pageDTO && pageDTO.currentPage > 0"
-    (click)="onPageChange(pageDTO.currentPage - 1)">←</span>
+  <app-naked-button class="pagination__arrow pagination__arrow--first" *ngIf="pageDTO && pageDTO.currentPage > 0"
+    (click)="onPageChange(pageDTO.currentPage - 1)">←</app-naked-button>
 
   <span *ngFor="let page of getMiddleRange()">
     <ng-container *ngIf="page === '...'">
       <span class="pagination__dots">...</span>
     </ng-container>
     <ng-container *ngIf="page !== '...'">
-      <span class="pagination__txt" (click)="onPageChange(page)" [ngClass]="{ 'active': page === pageDTO.currentPage }">
-        {{ getDisplayableValue(page) }}
-      </span>
+      <app-naked-button class="pagination__txt" (click)="onPageChange(page)" [ngClass]="{ 'active': page === pageDTO.currentPage }">
+      {{ getDisplayableValue(page) }}
+      </app-naked-button>
     </ng-container>
   </span>
 
-  <span class="pagination__arrow pagination__arrow--last"
+  <app-naked-button class="pagination__arrow pagination__arrow--last"
     *ngIf="pageDTO && pageDTO.currentPage <  pageDTO.totalPages - 1"
-    (click)="onPageChange(pageDTO.currentPage + 1)">→</span>
+    (click)="onPageChange(pageDTO.currentPage + 1)">
+    →
+  </app-naked-button>
 </div>
