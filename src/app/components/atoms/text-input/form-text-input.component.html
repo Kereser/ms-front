@@ -11,5 +11,6 @@
 			form.get(config.name)?.errors?.['maxlength']?.requiredLength }} characters</small>
 		<small *ngIf="form.get(config.name)?.errors?.['email']">Enter a valid email</small>
 		<small *ngIf="form.get(config.name)?.errors?.['pattern']">Invalid format</small>
+		<small *ngIf="form.get(config.name)?.errors?.['notValidFormat']" >Not valid format</small>
 	</div>
 </div>
