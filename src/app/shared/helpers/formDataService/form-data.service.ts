@@ -10,20 +10,19 @@ export class FormDataService {
   private formConfig: Map<string, Array<FormField>> = Constants.FORM_CONFIGURATIONS
 
   private generateFormConfiguration(fields: EntityFields[] | undefined): FormField[] {
-    if (!fields) return []; 
-    return fields.map(field => ({
-      ...field,
-      label: this.capitalize(field.name),
-      value: ''
-    }));
+    if (!fields) return [];
+
+    return fields.map(field => {
+      return {
+        ...field,
+        label: field.name,
+        value: '',
+      }
+    });
   }
 
   getValidationsForFieldOnEntity(entity: keyof ValidationConfig, fieldName: string): ValidatorFn[] {
     return Validations[entity][fieldName];
-  }
-
-  private capitalize(word: string): string {
-    return word.charAt(0).toUpperCase() + word.slice(1);
   }
 
   getFormConfiguration(type: string): FormField[] {
