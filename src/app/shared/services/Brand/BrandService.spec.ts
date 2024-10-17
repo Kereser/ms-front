@@ -29,17 +29,24 @@ describe('BrandService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call createEntity with the correct URL', () => {
+  it('should call createEntity with the correct URL', (done) => {
     const brand = 'Test Brand';
 
-    service.createEntity(brand).subscribe(response => {
-      expect(response).toBeTruthy();
+    const mockError = { message: Consts.FIELD_VALIDATION_ERRORS };
+
+    service.createEntity(brand).subscribe({
+      next: () => fail('expected an error, not an entity'),
+      error: (error) => {
+        expect(error.error.message).toBe(Consts.FIELD_VALIDATION_ERRORS);
+        done();
+      }
     });
 
     const req = httpMock.expectOne(baseURL);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toBe(brand);
-    req.flush({});
+
+    req.flush(mockError, { status: 400, statusText: 'bad request' });
   });
 
   it('should call getEntityPage with the correct URL and parameters', () => {
@@ -72,5 +79,22 @@ describe('BrandService', () => {
     const req = httpMock.expectOne(req => req.url === baseURL && req.params.get('page') === `${page}` && req.params.get('pageSize') === `${pageSize}` && req.params.get('column') === column && req.params.get('direction') === direction.toUpperCase());
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
+  });
+
+  it('should get brand by name', (done) => {
+    const baseURL = environment.STOCK_BASE_URL + Consts.BRAND_PATH;
+    const byNameURL = baseURL + Consts.BY_NAMES_PATH;
+    
+    service.getByName('anyName').subscribe({
+      next: (response) => {
+        expect(response).toBeDefined();
+        done();
+      },
+      error: (err) => done.fail('expected a successful response, not an error: ' + err)
+    });
+
+    const req = httpMock.expectOne(`${byNameURL}?names=anyName`);
+    expect(req.request.method).toBe('GET');
+    req.flush({});
   });
 });
