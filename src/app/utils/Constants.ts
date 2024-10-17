@@ -1,4 +1,4 @@
-import { ValidatorFn, Validators } from "@angular/forms";
+import { AbstractControl, ValidationErrors, ValidatorFn, Validators } from "@angular/forms";
 import { ArticleModel } from "../shared/models/ArticleModel";
 import { CategoryArticleModel } from "../shared/models/CategoryArticleModel";
 import { BrandArticleModel } from "../shared/models/BrandArticleModel";
@@ -17,10 +17,17 @@ export const Consts = {
 	DESCRIPTION_CAPI: 'Description',
 	CATEGORY: 'category',
 	CATEGORIES: 'Categories',
+	SORT_CATEGORY_NAMES: 'category:name',
+	CATEGORY_IDS: 'categoryIds',
+
 	BRAND: 'Brand',
+	BRAND_ID: 'brandId',
+	
 	ARTICLE: 'Article',
-	BRAND_NAME: 'Brand name',
-	PRICE: 'Price',
+	BRAND_NAME: 'Brand Name',
+	PRICE: 'price',
+	QUANTITY: 'quantity',
+	CATEGORY_NAMES: 'Category Names',
 
 	TEST: 'test',
 	CREATED: 'Created',
@@ -28,12 +35,15 @@ export const Consts = {
 	DEFAULT_DATE: '2024-06-08',
 
 	BUTTON: 'button',
+	SUBMIT: 'submit',
+	CUSTOM_TXT: 'Custom txt',
 	DEFAULT_BUTTON: 'Default button',
 
 	TEST_ENTITY: 'TestEntity',
 	TEST_FIELD: 'testField',
 	TEST_FIELD_CAPI: 'TestField',
 	NON_EXISTED_TYPE: 'nonExistentType',
+	TOAST_MESSAGE: 'Toas Message',
 
 	BUTTON_SELECTOR: 'app-button',
 	HEADER_SELECTOR: 'app-header',
@@ -44,6 +54,7 @@ export const Consts = {
 	INVIDIVUAL_DASHBOARD_PATH: 'dashboard/:type',
 	REDIRECT_DASHBOARD_PATH: '/dashboard',
 	CATEGORIES_PATH: '/categories',
+	BY_NAMES_PATH: '/by-names',
 	BRAND_PATH: '/brands',
 	ARTICLES_PATH: '/articles',
 	
@@ -58,6 +69,7 @@ export const Consts = {
 
 	EMAZON: 'Emazon',
 	COMMA_SPACE: ', ',
+	COMMA: ',',
 
 	ZERO: 0,
 	ONE: 1,
@@ -76,6 +88,14 @@ export const Consts = {
 	THREE_THOUSAND: 3000,
 
 	ERROR_ON_CREATE_ENTITY: 'An error was found while processing createEntity',
+	CATEGORIES_NOT_FOUND: 'Some of the categories were not found.',
+	BRANDS_NOT_FOUND: 'Brand were not found.',
+	FIELD_VALIDATION_ERRORS: 'Request has field validation errors',
+
+	BIG_DECIMAL_REGEX: /^\d+(?:.\d{1,2})?$/,
+	CATEGORIES_REGEX: /^[a-zA-Z]{5,}(?:\s*,\s*[a-zA-Z]{5,})*$/,
+	NUMBERS_REGEX: /^\d+$/,
+	CHARACTERS_REGEX: /^\w*$/,
 }
 
 export enum Direcitons {
@@ -93,7 +113,19 @@ export interface ValidationConfig {
   article: ValidationRules;
 }
 
-export const categoryColumnDefault = Consts;
+const applyTest = (regex: RegExp, val: string) => {
+	if (!regex.test(val)) {
+		return { notValidFormat: true };
+	}
+
+	return null;
+}
+
+const validCategories = (control: AbstractControl): ValidationErrors | null => {
+	const value = control.value ? control.value.trim() : '';
+	
+	return applyTest(Consts.CATEGORIES_REGEX, value);
+}
 
 export const Validations: ValidationConfig = {
 	brand: {
@@ -107,9 +139,10 @@ export const Validations: ValidationConfig = {
 	article: {
 		name: [Validators.required, Validators.minLength(Consts.THREE), Validators.maxLength(Consts.FIFTY)],
 		description: [Validators.maxLength(Consts.ONE_HUNDRED_TWENTY), Validators.minLength(Consts.FIVE), Validators.required],
-		price: [Validators.required],
-		categories: [Validators.required, Validators.minLength(Consts.ONE), Validators.maxLength(Consts.THREE)],
-		brand: [Validators.required]
+		'price': [Validators.required, Validators.pattern(Consts.BIG_DECIMAL_REGEX)],
+		'quantity': [Validators.required, Validators.pattern(Consts.NUMBERS_REGEX)],
+		'Category Names': [validCategories],
+		'Brand Name': [Validators.required, Validators.maxLength(Consts.NINETY), Validators.minLength(Consts.FIVE)]
 	}
 }
 
@@ -128,8 +161,9 @@ export class Constants {
 			{ name: Consts.NAME, type: Consts.TYPE_INPUT},
 			{ name: Consts.DESCRIPTION, type: Consts.TYPE_INPUT},
 			{ name: Consts.PRICE, type: Consts.TYPE_INPUT},
-			{ name: 'categoryIds', type: Consts.TYPE_INPUT},
-			{ name: 'brandId', type: Consts.TYPE_INPUT}
+			{ name: Consts.QUANTITY, type: Consts.TYPE_INPUT},
+			{ name: Consts.CATEGORY_NAMES, type: Consts.TYPE_INPUT},
+			{ name: Consts.BRAND_NAME, type: Consts.TYPE_INPUT}
 		]]
 	]);
 }
@@ -143,12 +177,6 @@ export interface FormField {
 	name: string;
 	type: string;
 	value?: string;
-	options?: optValues[];
-}
-
-export interface optValues {
-	label: string;
-	value: string;
 }
 
 export const categoryArticle1: CategoryArticleModel = {
