@@ -52,10 +52,6 @@
     font-size: $ty-body-s;
   }
   
-  &__txt:hover {
-    background-color: $spacer_light;
-  }
-  
   &__txt.active {
     transform: translateY(-8px);
     transition: transform 0.3s ease;

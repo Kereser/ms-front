@@ -1,13 +1,8 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
-import { ArticleModel } from '../../../shared/models/ArticleModel';
-import { BrandModel } from '../../../shared/models/BrandModel';
-import { CategoryModel } from '../../../shared/models/CategoryModel';
 import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { PageDTO } from '../../../shared/models/PageDTO';
-import { IEntityService } from '../../../shared/services/IEntityService';
+import { IEntityService, Model } from '../../../shared/services/IEntityService';
 import { Consts, Direcitons } from '../../../utils/Constants';
-
-type EntityType = ArticleModel | CategoryModel | BrandModel;
 
 @Component({
   selector: 'app-table',
@@ -21,7 +16,7 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() pageSize: number = Consts.ONE;
   @Input() page: number = Consts.ZERO;
 
-  pageDTO!: PageDTO<EntityType>;
+  pageDTO!: PageDTO<Model>;
   entityService!: IEntityService;
 
   direction: Direcitons = Direcitons.ASC;
@@ -42,7 +37,7 @@ export class TableComponent implements OnInit, OnChanges {
 
   loadData(): void {
     this.entityService.getEntityPage(this.page, this.pageSize, this.column, this.direction).subscribe({
-      next: (pageData: PageDTO<EntityType>) => {
+      next: (pageData: PageDTO<Model>) => {
         this.pageDTO = pageData;
       },
       error: err => {
@@ -53,9 +48,17 @@ export class TableComponent implements OnInit, OnChanges {
 
   onSort(field: string): void {
     this.direction = this.getReverseSort(this.direction);
-    this.column = field;
+    this.setColumn(field);
 
     this.loadData();
+  }
+
+  private setColumn(field: string) {
+    if (field.toLowerCase() === Consts.CATEGORIES.toLowerCase()) {      
+      this.column = Consts.SORT_CATEGORY_NAMES;
+      return;
+    }
+    this.column = field.toLowerCase();
   }
 
   onPageChange(page: number | string): void {
@@ -63,7 +66,7 @@ export class TableComponent implements OnInit, OnChanges {
     this.loadData();
   }
 
-  getValue(row: EntityType, header: string): any {
+  getValue(row: Model, header: string): any {
     const value = (row as any)[header.toLowerCase()];
     if (Array.isArray(value)) {
       return value.map(item => item.name).join(', ');

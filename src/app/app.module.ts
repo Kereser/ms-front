@@ -8,8 +8,6 @@ import { ButtonComponent } from 'src/app/components/atoms/button/button.componen
 import { CustomDropdownComponent } from './components/atoms/custom-dropdown/custom-dropdown.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormComponent } from './components/molecules/dynamic-form/dynamic-form.component';
-import { ModalComponent } from './components/organisms/modal/modal.component';
-import { CreateModalComponent } from './components/organisms/create-modal/create-modal.component';
 import { HeaderComponent } from './components/organisms/header/header.component';
 import { NavigationComponent } from './components/organisms/navigation/navigation.component';
 import { FormCreateComponent } from './components/molecules/form-create/form-create.component';
@@ -26,8 +24,6 @@ import { CapitalizePipe } from './shared/pipes/capitalize.pipe';
     ButtonComponent,
     CustomDropdownComponent,
     DynamicFormComponent,
-    ModalComponent,
-    CreateModalComponent,
     FormTextInputComponent,
     HeaderComponent,
     NavigationComponent,
