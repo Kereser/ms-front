@@ -9,20 +9,25 @@ import { PageDTO } from "../../models/PageDTO";
 
 
 @Injectable({
-    providedIn: 'root'
+	providedIn: 'root'
 })
 export class CategoryService implements IEntityService {
 
-    private baseURL = environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH;
+	private baseURL = environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH;
+	private byNameURL = this.baseURL + Consts.BY_NAMES_PATH;
 
-    constructor(private http: HttpClient) { }
+	constructor(private http: HttpClient) { }
 
-    createEntity(category: string): Observable<any> {
-        return this.http.post(this.baseURL, category);
-    }
+	createEntity(category: string): Observable<any> {
+		return this.http.post(this.baseURL, category);
+	}
 
-    getEntityPage(page: number, pageSize: number, column: string, sortOrder: string): Observable<PageDTO<CategoryModel>> {
-        const direction = sortOrder.toUpperCase();
-        return this.http.get<PageDTO<CategoryModel>>(this.baseURL, { params: {page, pageSize, column, direction} });
-    }
+	getEntityPage(page: number, pageSize: number, column: string, sortOrder: string): Observable<PageDTO<CategoryModel>> {
+		const direction = sortOrder.toUpperCase();
+		return this.http.get<PageDTO<CategoryModel>>(this.baseURL, { params: { page, pageSize, column, direction } });
+	}
+
+	getByNames(names: string): Observable<CategoryModel[]> {
+		return this.http.get<CategoryModel[]>(this.byNameURL, { params: { names } })
+	}
 }
