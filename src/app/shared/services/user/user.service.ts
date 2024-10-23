@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { Consts } from '../../../utils/Constants';
 import { environment } from '../../../../environments/environment';
 
-type AuxDepotType = {
+export type AuxDepotForm = {
   name: string;
   'last name': string;
   'id number': string;
@@ -15,7 +15,7 @@ type AuxDepotType = {
   password: string;
 };
 
-type ReqAuxDepot = {
+export type AuxDepotRequest = {
   name: string;
   lastName: string;
   idNumber: string;
@@ -33,11 +33,11 @@ export class UserService implements IDynamicFormEntity {
 
   constructor(private http: HttpClient) {}
 
-  createEntity(entity: AuxDepotType): Observable<any> {
+  createEntity(entity: AuxDepotForm): Observable<any> {
     return this.http.post(this.baseURL, this.getAuxDepotObj(entity));
   }
 
-  private getAuxDepotObj(entity: AuxDepotType): ReqAuxDepot {
+  private getAuxDepotObj(entity: AuxDepotForm): AuxDepotRequest {
     const {
       name,
       'last name': lastName,

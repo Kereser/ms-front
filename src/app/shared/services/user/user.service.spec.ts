@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { UserService } from './user.service';
+import { AuxDepotForm, AuxDepotRequest, UserService } from './user.service';
 import {
   HttpClientTestingModule,
   HttpTestingController,
@@ -31,10 +31,10 @@ describe('UserService', () => {
   });
 
   it('should create aux-depot', () => {
-    const entity = {
+    const entity: AuxDepotForm = {
       name: Consts.NAME,
       'last name': Consts.NAME,
-      'id number': Consts.ONE_HUNDRED_TWENTY,
+      'id number': Consts.ONE_HUNDRED_TWENTY.toString(),
       'phone number': '3001231212',
       'birth date': '2003-02-04',
       email: Consts.TEST_EMAIL,
@@ -49,20 +49,20 @@ describe('UserService', () => {
   });
 
   it('should format body when sending the req', () => {
-    const entity = {
+    const entity: AuxDepotForm = {
       name: Consts.NAME,
       'last name': Consts.NAME,
-      'id number': Consts.ONE_HUNDRED_TWENTY,
+      'id number': Consts.ONE_HUNDRED_TWENTY.toString(),
       'phone number': '3001231212',
       'birth date': '2003-02-04',
       email: Consts.TEST_EMAIL,
       password: Consts.TYPE_PASSWORD,
     };
 
-    const formattedEntity = {
+    const formattedEntity: AuxDepotRequest = {
       name: Consts.NAME,
       lastName: Consts.NAME,
-      idNumber: Consts.ONE_HUNDRED_TWENTY,
+      idNumber: Consts.ONE_HUNDRED_TWENTY.toString(),
       number: '3001231212',
       birthDate: '2003-02-04',
       email: Consts.TEST_EMAIL,

@@ -1,15 +1,24 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { ArticleService } from './ArticleService';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { ArticleForm, ArticleRequest, ArticleService } from './ArticleService';
 import { PageDTO, Pageable } from '../../models/PageDTO';
 import { ArticleModel } from '../../models/ArticleModel';
 import { environment } from '../../../../environments/environment';
-import { article1, article2, Consts, Direcitons } from '../../../utils/Constants';
+import {
+  article1,
+  article2,
+  Consts,
+  Direcitons,
+} from '../../../utils/Constants';
 import { CategoryService } from '../Category/CategoryService';
 import { BrandService } from '../Brand/BrandService';
 import { of } from 'rxjs';
 import { BrandModel } from '../../models/BrandModel';
 import { CategoryModel } from '../../models/CategoryModel';
+import { TypeMethods } from '../TypeMethods.enum';
 
 describe('ArticleService', () => {
   let service: ArticleService;
@@ -20,7 +29,7 @@ describe('ArticleService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ArticleService, CategoryService, BrandService]
+      providers: [ArticleService, CategoryService, BrandService],
     });
 
     service = TestBed.inject(ArticleService);
@@ -44,24 +53,33 @@ describe('ArticleService', () => {
       price: '100',
       quantity: '10',
       'Category Names': 'Category1,Category2',
-      'Brand Name': 'Brand1'
+      'Brand Name': 'Brand1',
     };
 
     const mockError = { message: Consts.FIELD_VALIDATION_ERRORS };
 
-    jest.spyOn(categoryService, 'getByNames').mockReturnValue(of([{ id: 1, name: 'Category1' }, { id: 2, name: 'Category2' }] as CategoryModel[]));
-    jest.spyOn(brandService, 'getByName').mockReturnValue(of([{ id: 1, name: 'Brand1' }] as BrandModel[]));
+    jest.spyOn(categoryService, 'getByNames').mockReturnValue(
+      of([
+        { id: 1, name: 'Category1' },
+        { id: 2, name: 'Category2' },
+      ] as CategoryModel[])
+    );
+    jest
+      .spyOn(brandService, 'getByName')
+      .mockReturnValue(of([{ id: 1, name: 'Brand1' }] as BrandModel[]));
 
     service.createEntity(mockEntity).subscribe({
       next: () => fail('expected an error, not an entity'),
       error: (error) => {
         expect(error.error.message).toBe(Consts.FIELD_VALIDATION_ERRORS);
         done();
-      }
+      },
     });
 
-    const req = httpMock.expectOne(`${environment.STOCK_BASE_URL}${Consts.ARTICLES_PATH}`);
-    expect(req.request.method).toBe('POST');
+    const req = httpMock.expectOne(
+      `${environment.STOCK_BASE_URL}${Consts.ARTICLES_PATH}`
+    );
+    expect(req.request.method).toBe(TypeMethods.POST);
 
     req.flush(mockError, { status: 400, statusText: 'bad request' });
   });
@@ -70,7 +88,7 @@ describe('ArticleService', () => {
     const pageable: Pageable = {
       pageNumber: Consts.ZERO,
       pageSize: Consts.TWO,
-      offset: Consts.ZERO
+      offset: Consts.ZERO,
     };
 
     const mockResponse: PageDTO<ArticleModel> = {
@@ -82,18 +100,21 @@ describe('ArticleService', () => {
       size: Consts.TWO,
       first: true,
       last: true,
-      content: [
-        article1,
-        article2
-      ]
+      content: [article1, article2],
     };
 
-    service.getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC).subscribe((response) => {
-      expect(response).toEqual(mockResponse);
-    });
+    service
+      .getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC)
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
 
-    const req = httpMock.expectOne(`${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}?page=0&pageSize=2&column=name&direction=ASC`);
-    expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(
+      `${
+        environment.STOCK_BASE_URL + Consts.ARTICLES_PATH
+      }?page=0&pageSize=2&column=name&direction=ASC`
+    );
+    expect(req.request.method).toBe(TypeMethods.GET);
     req.flush(mockResponse);
   });
 
@@ -104,16 +125,25 @@ describe('ArticleService', () => {
       price: '100',
       quantity: '10',
       'Category Names': 'Category1,Category2',
-      'Brand Name': 'Brand1'
+      'Brand Name': 'Brand1',
     };
 
-    jest.spyOn(categoryService, 'getByNames').mockReturnValue(of([{ id: 1, name: 'Category1' }, { id: 2, name: 'Category2' }] as CategoryModel[]));
-    jest.spyOn(brandService, 'getByName').mockReturnValue(of([{ id: 1, name: 'Brand1' }] as BrandModel[]));
+    jest.spyOn(categoryService, 'getByNames').mockReturnValue(
+      of([
+        { id: 1, name: 'Category1' },
+        { id: 2, name: 'Category2' },
+      ] as CategoryModel[])
+    );
+    jest
+      .spyOn(brandService, 'getByName')
+      .mockReturnValue(of([{ id: 1, name: 'Brand1' }] as BrandModel[]));
 
     service.createEntity(mockEntity).subscribe({});
 
-    const req = httpMock.expectOne(`${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}`);
-    expect(req.request.method).toBe('POST');
+    const req = httpMock.expectOne(
+      `${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}`
+    );
+    expect(req.request.method).toBe(TypeMethods.POST);
 
     const { name, description, price, quantity } = mockEntity;
     const mockWithIds = {
@@ -122,7 +152,7 @@ describe('ArticleService', () => {
       price,
       quantity,
       [Consts.CATEGORY_IDS]: [Consts.ONE, Consts.TWO],
-      [Consts.BRAND_ID]: Consts.ONE
+      [Consts.BRAND_ID]: Consts.ONE,
     };
 
     expect(req.request.body).toEqual(mockWithIds);
@@ -136,17 +166,19 @@ describe('ArticleService', () => {
       price: '100',
       quantity: '10',
       'Category Names': 'Category1,Category2',
-      'Brand Name': 'Brand1'
+      'Brand Name': 'Brand1',
     };
 
-    jest.spyOn(categoryService, 'getByNames').mockReturnValue(of([{ id: 1, name: 'Category1' }] as CategoryModel[]));
+    jest
+      .spyOn(categoryService, 'getByNames')
+      .mockReturnValue(of([{ id: 1, name: 'Category1' }] as CategoryModel[]));
 
     service.createEntity(mockEntity).subscribe({
       next: () => done.fail('Expected an error, but got a successful response'),
-      error: data => {
+      error: (data) => {
         expect(data.message).toBe(Consts.CATEGORIES_NOT_FOUND);
         done();
-      }
+      },
     });
 
     httpMock.expectNone(`${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}`);
@@ -159,20 +191,68 @@ describe('ArticleService', () => {
       price: '100',
       quantity: '10',
       'Category Names': 'Category1,Category2',
-      'Brand Name': 'Brand1'
+      'Brand Name': 'Brand1',
     };
 
-    jest.spyOn(categoryService, 'getByNames').mockReturnValue(of([{ id: 1, name: 'Category1' }, { id: 2, name: 'Category2' }] as CategoryModel[]));
-    jest.spyOn(brandService, 'getByName').mockReturnValue(of([] as BrandModel[]));
+    jest.spyOn(categoryService, 'getByNames').mockReturnValue(
+      of([
+        { id: 1, name: 'Category1' },
+        { id: 2, name: 'Category2' },
+      ] as CategoryModel[])
+    );
+    jest
+      .spyOn(brandService, 'getByName')
+      .mockReturnValue(of([] as BrandModel[]));
 
     service.createEntity(mockEntity).subscribe({
       next: () => done.fail('Expected an error, but got a successful response'),
-      error: data => {
+      error: (data) => {
         expect(data.message).toBe(Consts.BRANDS_NOT_FOUND);
         done();
-      }
+      },
     });
 
     httpMock.expectNone(`${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}`);
+  });
+
+  it('should create article', () => {
+    const mockEntity: ArticleForm = {
+      name: 'Test Article',
+      description: 'Test Description',
+      price: '100',
+      quantity: '10',
+      'Category Names': 'Category1,Category2',
+      'Brand Name': 'Brand1',
+    };
+
+    const formattedEntity: ArticleRequest = {
+      name: 'Test Article',
+      description: 'Test Description',
+      price: '100',
+      quantity: '10',
+      categoryIds: [Consts.ONE, Consts.TWENTY],
+      brandId: Consts.ONE,
+    };
+
+    service
+      .createEntity(mockEntity)
+      .subscribe((res) => expect(res).toBeTruthy());
+
+    const categoryReq = httpMock.expectOne(
+      `${categoryService['byNameURL']}?names=Category1,Category2`
+    );
+    expect(categoryReq.request.method).toBe(TypeMethods.GET);
+    categoryReq.flush([{ id: 1 }, { id: 20 }]);
+
+    const brandReq = httpMock.expectOne(
+      `${brandService['byNameURL']}?names=Brand1`
+    );
+    expect(brandReq.request.method).toBe(TypeMethods.GET);
+    brandReq.flush([{ id: 1 }]);
+
+    const req = httpMock.expectOne(service['baseURL']);
+    expect(req.request.method).toBe(TypeMethods.POST);
+    expect(req.request.body).toEqual(formattedEntity);
+    req.flush({});
   });
 });

@@ -1,10 +1,23 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { CategoryService } from './CategoryService';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import {
+  CategoryFrom,
+  CategoryRequest,
+  CategoryService,
+} from './CategoryService';
 import { PageDTO, Pageable } from '../../models/PageDTO';
 import { CategoryModel } from '../../models/CategoryModel';
 import { environment } from '../../../../environments/environment';
-import { category1, category2, Consts, Direcitons } from '../../../utils/Constants';
+import {
+  category1,
+  category2,
+  Consts,
+  Direcitons,
+} from '../../../utils/Constants';
+import { TypeMethods } from '../TypeMethods.enum';
 
 describe('CategoryService', () => {
   let service: CategoryService;
@@ -13,7 +26,7 @@ describe('CategoryService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CategoryService]
+      providers: [CategoryService],
     });
 
     service = TestBed.inject(CategoryService);
@@ -29,14 +42,23 @@ describe('CategoryService', () => {
   });
 
   it('should create a category', () => {
-    const category = 'New Category';
+    const category: CategoryFrom = {
+      name: Consts.NAME,
+      description: Consts.DESCRIPTION,
+    };
+
+    const categoryReq: CategoryRequest = {
+      name: Consts.NAME,
+      description: Consts.DESCRIPTION,
+    };
+
     service.createEntity(category).subscribe((response: any) => {
       expect(response).toBeTruthy();
     });
 
     const req = httpMock.expectOne(service['baseURL']);
-    expect(req.request.method).toBe('POST');
-    expect(req.request.body).toBe(category);
+    expect(req.request.method).toBe(TypeMethods.POST);
+    expect(req.request.body).toEqual(categoryReq);
     req.flush({ success: true });
   });
 
@@ -44,7 +66,7 @@ describe('CategoryService', () => {
     const pageable: Pageable = {
       pageNumber: 0,
       pageSize: 2,
-      offset: 0
+      offset: 0,
     };
 
     const mockResponse: PageDTO<CategoryModel> = {
@@ -56,33 +78,43 @@ describe('CategoryService', () => {
       size: 2,
       first: true,
       last: true,
-      content: [
-        category1,
-        category2
-      ]
+      content: [category1, category2],
     };
 
-    service.getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC).subscribe((response: any) => {
-      expect(response).toEqual(mockResponse);
-    });
+    service
+      .getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC)
+      .subscribe((response: any) => {
+        expect(response).toEqual(mockResponse);
+      });
 
-    const req = httpMock.expectOne(`${environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH}?page=0&pageSize=2&column=name&direction=ASC`);
-    expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(
+      `${
+        environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH
+      }?page=0&pageSize=2&column=name&direction=ASC`
+    );
+    expect(req.request.method).toBe(TypeMethods.GET);
     req.flush(mockResponse);
   });
 
   it('should handle HTTP errors correctly', () => {
     const errorResponse = { status: 404, statusText: 'Not Found' };
 
-    service.getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC).subscribe({
-      next: () => fail('should have failed with 404 error'),
-      error: (error: any) => {
-        expect(error.status).toEqual(404);
-        expect(error.statusText).toEqual('Not Found');
-      }});
+    service
+      .getEntityPage(Consts.ZERO, Consts.TWO, Consts.NAME, Direcitons.ASC)
+      .subscribe({
+        next: () => fail('should have failed with 404 error'),
+        error: (error: any) => {
+          expect(error.status).toEqual(404);
+          expect(error.statusText).toEqual('Not Found');
+        },
+      });
 
-    const req = httpMock.expectOne(`${environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH}?page=0&pageSize=2&column=name&direction=ASC`);
-    expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(
+      `${
+        environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH
+      }?page=0&pageSize=2&column=name&direction=ASC`
+    );
+    expect(req.request.method).toBe(TypeMethods.GET);
 
     req.flush(null, errorResponse);
   });
@@ -91,22 +123,25 @@ describe('CategoryService', () => {
     const baseURL = environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH;
     const byNameURL = baseURL + Consts.BY_NAMES_PATH;
 
-    const mockedReponse: CategoryModel[] = [{
-      id: 1,
-      name: 'anyName',
-      description: 'anything',
-    }]
-    
+    const mockedReponse: CategoryModel[] = [
+      {
+        id: 1,
+        name: 'anyName',
+        description: 'anything',
+      },
+    ];
+
     service.getByNames('anyName').subscribe({
       next: (response) => {
         expect(response).toBe(mockedReponse);
         done();
       },
-      error: (err) => done.fail('expected a successful response, not an error: ' + err)
+      error: (err) =>
+        done.fail('expected a successful response, not an error: ' + err),
     });
 
     const req = httpMock.expectOne(`${byNameURL}?names=anyName`);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe(TypeMethods.GET);
     req.flush(mockedReponse, {});
   });
 });
