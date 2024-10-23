@@ -1,13 +1,20 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
-import { PageDTO } from '../../../shared/models/PageDTO';
-import { IEntityService, Model } from '../../../shared/services/IEntityService';
-import { Consts, Direcitons } from '../../../utils/Constants';
+import { PageDTO } from '@app/shared/models/PageDTO';
+import { IPageableService, Model } from '@app/shared/services/IPageableService';
+import { Consts, Direcitons, ToastTypes } from '../../../utils/Constants';
+import { ToastService } from '../../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+  styleUrls: ['./table.component.scss'],
 })
 export class TableComponent implements OnInit, OnChanges {
   @Input() headers: string[] = [];
@@ -17,12 +24,15 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() page: number = Consts.ZERO;
 
   pageDTO!: PageDTO<Model>;
-  entityService!: IEntityService;
+  entityService!: IPageableService;
 
   direction: Direcitons = Direcitons.ASC;
   column: string = Consts.NAME;
 
-  constructor(private serviceFactory: EntityServiceFactory) { }
+  constructor(
+    private serviceFactory: EntityServiceFactory,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit(): void {
     this.reloadDashboard();
@@ -36,14 +46,19 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   loadData(): void {
-    this.entityService.getEntityPage(this.page, this.pageSize, this.column, this.direction).subscribe({
-      next: (pageData: PageDTO<Model>) => {
-        this.pageDTO = pageData;
-      },
-      error: err => {
-        console.error("An error occurred while loading data", err);
-      }
-    });
+    this.entityService
+      .getEntityPage(this.page, this.pageSize, this.column, this.direction)
+      .subscribe({
+        next: (pageData: PageDTO<Model>) => {
+          this.pageDTO = pageData;
+        },
+        error: (_) => {
+          this.toastService.show(
+            ToastTypes.DANGER,
+            'An error occurred while loading data'
+          );
+        },
+      });
   }
 
   onSort(field: string): void {
@@ -54,7 +69,7 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   private setColumn(field: string) {
-    if (field.toLowerCase() === Consts.CATEGORIES.toLowerCase()) {      
+    if (field.toLowerCase() === Consts.CATEGORIES.toLowerCase()) {
       this.column = Consts.SORT_CATEGORY_NAMES;
       return;
     }
@@ -69,7 +84,7 @@ export class TableComponent implements OnInit, OnChanges {
   getValue(row: Model, header: string): any {
     const value = (row as any)[header.toLowerCase()];
     if (Array.isArray(value)) {
-      return value.map(item => item.name).join(', ');
+      return value.map((item) => item.name).join(', ');
     }
     if (typeof value === 'object' && value !== null && Consts.NAME in value) {
       return value.name;
@@ -95,7 +110,7 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   getDisplayableValue(page: number | string) {
-    return page as number + 1;
+    return (page as number) + 1;
   }
 
   private getReverseSort(order: string): Direcitons {
@@ -118,14 +133,39 @@ export class TableComponent implements OnInit, OnChanges {
     if (currentPage <= 2) {
       return [0, 1, 2, 3, '...', totalPages - 1];
     } else if (currentPage >= totalPages - 3) {
-      return [0, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1];
+      return [
+        0,
+        '...',
+        totalPages - 4,
+        totalPages - 3,
+        totalPages - 2,
+        totalPages - 1,
+      ];
     } else {
-      return [0, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages - 1];
+      return [
+        0,
+        '...',
+        currentPage - 1,
+        currentPage,
+        currentPage + 1,
+        '...',
+        totalPages - 1,
+      ];
     }
   }
 
   private reloadDashboard() {
-    this.entityService = this.serviceFactory.getService(this.entityName);
+    this.entityService = this.serviceFactory.getPageableService(
+      this.entityName
+    );
+    this.reloadFilters();
     this.loadData();
+  }
+
+  private reloadFilters() {
+    this.column = Consts.NAME;
+    this.direction = Direcitons.ASC;
+    this.page = Consts.ZERO;
+    this.pageSize = Consts.ONE;
   }
 }
