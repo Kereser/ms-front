@@ -1,10 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { BrandService } from './BrandService';
+import {
+  HttpClientTestingModule,
+  HttpTestingController,
+} from '@angular/common/http/testing';
+import { BrandForm, BrandRequest, BrandService } from './BrandService';
 import { environment } from '../../../../environments/environment';
 import { Consts } from '../../../utils/Constants';
 import { BrandModel } from '../../models/BrandModel';
 import { Pageable, PageDTO } from '../../models/PageDTO';
+import { TypeMethods } from '../TypeMethods.enum';
 
 describe('BrandService', () => {
   let service: BrandService;
@@ -29,9 +33,32 @@ describe('BrandService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should call createEntity with the correct URL', (done) => {
-    const brand = 'Test Brand';
+  it('should create brand', () => {
+    const brand: BrandForm = {
+      name: Consts.NAME,
+      description: Consts.DESCRIPTION,
+    };
 
+    const brandReq: BrandRequest = {
+      name: Consts.NAME,
+      description: Consts.DESCRIPTION,
+    };
+
+    service.createEntity(brand).subscribe({
+      next: (data) => expect(data).toBeTruthy(),
+    });
+
+    const req = httpMock.expectOne(baseURL);
+    expect(req.request.method).toBe(TypeMethods.POST);
+    expect(req.request.body).toEqual(brandReq);
+    req.flush({});
+  });
+
+  it('should call createEntity with the correct URL', (done) => {
+    const brand: BrandForm = {
+      name: Consts.NAME,
+      description: Consts.DESCRIPTION,
+    };
     const mockError = { message: Consts.FIELD_VALIDATION_ERRORS };
 
     service.createEntity(brand).subscribe({
@@ -39,11 +66,11 @@ describe('BrandService', () => {
       error: (error) => {
         expect(error.error.message).toBe(Consts.FIELD_VALIDATION_ERRORS);
         done();
-      }
+      },
     });
 
     const req = httpMock.expectOne(baseURL);
-    expect(req.request.method).toBe('POST');
+    expect(req.request.method).toBe(TypeMethods.POST);
     expect(req.request.body).toBe(brand);
 
     req.flush(mockError, { status: 400, statusText: 'bad request' });
@@ -53,7 +80,7 @@ describe('BrandService', () => {
     const pageable: Pageable = {
       pageNumber: 0,
       pageSize: 2,
-      offset: 0
+      offset: 0,
     };
 
     const page = 1;
@@ -69,32 +96,42 @@ describe('BrandService', () => {
       size: 2,
       first: true,
       last: true,
-      content: []
+      content: [],
     };
 
-    service.getEntityPage(page, pageSize, column, direction).subscribe((response) => {
-      expect(response).toEqual(mockResponse);
-    });
+    service
+      .getEntityPage(page, pageSize, column, direction)
+      .subscribe((response) => {
+        expect(response).toEqual(mockResponse);
+      });
 
-    const req = httpMock.expectOne(req => req.url === baseURL && req.params.get('page') === `${page}` && req.params.get('pageSize') === `${pageSize}` && req.params.get('column') === column && req.params.get('direction') === direction.toUpperCase());
-    expect(req.request.method).toBe('GET');
+    const req = httpMock.expectOne(
+      (req) =>
+        req.url === baseURL &&
+        req.params.get('page') === `${page}` &&
+        req.params.get('pageSize') === `${pageSize}` &&
+        req.params.get('column') === column &&
+        req.params.get('direction') === direction.toUpperCase()
+    );
+    expect(req.request.method).toBe(TypeMethods.GET);
     req.flush(mockResponse);
   });
 
   it('should get brand by name', (done) => {
     const baseURL = environment.STOCK_BASE_URL + Consts.BRAND_PATH;
     const byNameURL = baseURL + Consts.BY_NAMES_PATH;
-    
+
     service.getByName('anyName').subscribe({
       next: (response) => {
         expect(response).toBeDefined();
         done();
       },
-      error: (err) => done.fail('expected a successful response, not an error: ' + err)
+      error: (err) =>
+        done.fail('expected a successful response, not an error: ' + err),
     });
 
     const req = httpMock.expectOne(`${byNameURL}?names=anyName`);
-    expect(req.request.method).toBe('GET');
+    expect(req.request.method).toBe(TypeMethods.GET);
     req.flush({});
   });
 });

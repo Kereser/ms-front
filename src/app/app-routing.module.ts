@@ -1,17 +1,31 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { FormCreateComponent } from './components/molecules/form-create/form-create.component';
-import {  Consts } from './utils/Constants';
-import { DashboardComponent } from './components/molecules/dashboard/dashboard.component';
+import { Consts } from './utils/Constants';
 
 const routes: Routes = [
-  { path: Consts.CREATE_PATH, component: FormCreateComponent },
-  { path: Consts.INVIDIVUAL_DASHBOARD_PATH, component: DashboardComponent },
-  { path: Consts.EMPTY, redirectTo: Consts.REDIRECT_DASHBOARD_PATH, pathMatch: 'full' }
+  {
+    path: Consts.EMPTY,
+    redirectTo: Consts.DASHBOARD_CATEGORY_PATH,
+    pathMatch: 'full',
+  },
+  {
+    path: Consts.CREATE_PATH,
+    loadChildren: () =>
+      import('./router/create-page/create-page.module').then(
+        (m) => m.CreatePageModule
+      ),
+  },
+  {
+    path: Consts.DASHBOARD_PATH,
+    loadChildren: () =>
+      import('./router/dashbaord-page/dashbaord-page.module').then(
+        (m) => m.DashbaordPageModule
+      ),
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

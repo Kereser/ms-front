@@ -15,7 +15,6 @@ export class FormDataService {
     return fields.map(field => {
       return {
         ...field,
-        label: field.name,
         value: '',
       }
     });

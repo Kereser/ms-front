@@ -20,7 +20,7 @@ describe('FormTextInputComponent', () => {
     component.form = new FormGroup({
       testField: new FormControl('', [Validators.required, Validators.minLength(3)])
     });
-    component.config = { name: Consts.TEST_FIELD, label: 'Test Field' };
+    component.config = { name: Consts.TEST_FIELD, type: Consts.TYPE_TEXT };
 
     fixture.detectChanges();
   });
@@ -48,6 +48,6 @@ describe('FormTextInputComponent', () => {
 
   it('should display the correct label', () => {
     const label = fixture.debugElement.query(By.css(Consts.LABEL)).nativeElement;
-    expect(label.textContent).toBe('Test Field');
+    expect(label.textContent).toBe(Consts.TEST_FIELD);
   });
 });

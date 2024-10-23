@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   STOCK_BASE_URL: 'http://localhost:8080/stock',
+  USER_BASE_URL: 'http://localhost:8081/users',
 };
 
 /*

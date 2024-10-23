@@ -1,18 +1,35 @@
 <div class="table-header">
   <h2>{{ entityName.toUpperCase() }} table</h2>
-  <app-custom-dropdown [optionList]="['1', '5', '10', '15', '20']" (optionSelected)="handleTableSize($event)">
+  <app-custom-dropdown
+    [optionList]="['1', '5', '10', '15', '20']"
+    (optionSelected)="handleTableSize($event)"
+    [tableSize]="pageSize"
+  >
   </app-custom-dropdown>
 </div>
 
 <table class="dynamic-table">
-  <caption>{{entityName | capitalize }} table</caption>
+  <caption>
+    {{
+      entityName | capitalize
+    }}
+    table
+  </caption>
   <thead>
     <tr>
-      <th *ngFor="let header of headers" [class.clickable]="clickableHeaders.includes(header.toLowerCase())"
-        (click)="clickableHeaders.includes(header.toLowerCase()) && onSort(header.toLowerCase())">
+      <th
+        *ngFor="let header of headers"
+        [class.clickable]="clickableHeaders.includes(header.toLowerCase())"
+        (click)="
+          clickableHeaders.includes(header.toLowerCase()) &&
+            onSort(header.toLowerCase())
+        "
+      >
         {{ header | capitalize }}
-        <app-naked-button *ngIf="clickableHeaders.includes(header.toLowerCase())">
-          {{ direction === 'asc' ? '▲' : '▼' }}
+        <app-naked-button
+          *ngIf="clickableHeaders.includes(header.toLowerCase())"
+        >
+          {{ direction === "asc" ? "▲" : "▼" }}
         </app-naked-button>
       </th>
     </tr>
@@ -24,23 +41,33 @@
   </tbody>
 </table>
 <div class="pagination">
-  <app-naked-button class="pagination__arrow pagination__arrow--first" *ngIf="pageDTO && pageDTO.currentPage > 0"
-    (click)="onPageChange(pageDTO.currentPage - 1)">←</app-naked-button>
+  <app-naked-button
+    class="pagination__arrow pagination__arrow--first"
+    *ngIf="pageDTO && pageDTO.currentPage > 0"
+    (click)="onPageChange(pageDTO.currentPage - 1)"
+    >←</app-naked-button
+  >
 
   <span *ngFor="let page of getMiddleRange()">
     <ng-container *ngIf="page === '...'">
       <span class="pagination__dots">...</span>
     </ng-container>
     <ng-container *ngIf="page !== '...'">
-      <app-naked-button class="pagination__txt" (click)="onPageChange(page)" [ngClass]="{ 'active': page === pageDTO.currentPage }">
-      {{ getDisplayableValue(page) }}
+      <app-naked-button
+        class="pagination__txt"
+        (click)="onPageChange(page)"
+        [ngClass]="{ active: page === pageDTO.currentPage }"
+      >
+        {{ getDisplayableValue(page) }}
       </app-naked-button>
     </ng-container>
   </span>
 
-  <app-naked-button class="pagination__arrow pagination__arrow--last"
-    *ngIf="pageDTO && pageDTO.currentPage <  pageDTO.totalPages - 1"
-    (click)="onPageChange(pageDTO.currentPage + 1)">
+  <app-naked-button
+    class="pagination__arrow pagination__arrow--last"
+    *ngIf="pageDTO && pageDTO.currentPage < pageDTO.totalPages - 1"
+    (click)="onPageChange(pageDTO.currentPage + 1)"
+  >
     →
   </app-naked-button>
 </div>

@@ -25,16 +25,6 @@ export class TestConstants {
 	}
 }
 
-export const Constants = {
-	ZERO: 0,
-	ONE: 1,
-	TWO: 2,
-	THREE: 3,
-	SIX: 6,
-
-	EMIT: 'emit',
-}
-
 export enum TestUtilEnums {
 	NAVIGATE_BY_URL = 'navigateByUrl',
 	CREATE_BRAND = 'Create Brand',

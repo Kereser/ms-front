@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomDropdownComponent } from './custom-dropdown.component';
 import { By } from '@angular/platform-browser';
 import { TestUtilEnums } from '../../../utils/TestConstants';
+import { Consts } from '../../../utils/Constants';
 
 describe('CustomDropdownComponent', () => {
   let component: CustomDropdownComponent;
@@ -17,13 +18,21 @@ describe('CustomDropdownComponent', () => {
   });
 
   it('should create', () => {
-    component.optionList = [TestUtilEnums.OPTION_1, TestUtilEnums.OPTION_2, TestUtilEnums.OPTION_3];
+    component.optionList = [
+      TestUtilEnums.OPTION_1,
+      TestUtilEnums.OPTION_2,
+      TestUtilEnums.OPTION_3,
+    ];
     fixture.detectChanges();
     expect(component).toBeTruthy();
   });
 
   it('should initialize selectedOption with the first option from the list', () => {
-    component.optionList = [TestUtilEnums.OPTION_1, TestUtilEnums.OPTION_2, TestUtilEnums.OPTION_3];
+    component.optionList = [
+      TestUtilEnums.OPTION_1,
+      TestUtilEnums.OPTION_2,
+      TestUtilEnums.OPTION_3,
+    ];
     fixture.detectChanges();
     expect(component.selectedOption).toBe(TestUtilEnums.OPTION_1);
   });
@@ -42,13 +51,17 @@ describe('CustomDropdownComponent', () => {
     component.selectOption(TestUtilEnums.OPTION_2, event);
     expect(component.selectedOption).toBe(TestUtilEnums.OPTION_2);
     expect(component.dropdownOpen).toBe(false);
-    expect(component.optionSelected.emit).toHaveBeenCalledWith(TestUtilEnums.OPTION_2);
+    expect(component.optionSelected.emit).toHaveBeenCalledWith(
+      TestUtilEnums.OPTION_2
+    );
   });
 
   it('should close the dropdown when clicking outside', () => {
     component.dropdownOpen = true;
     const event = new Event(TestUtilEnums.CLICK);
-    Object.defineProperty(event, 'target', { value: document.createElement('div') });
+    Object.defineProperty(event, 'target', {
+      value: document.createElement('div'),
+    });
     component.onClickOutside(event);
     expect(component.dropdownOpen).toBe(false);
   });
@@ -62,16 +75,36 @@ describe('CustomDropdownComponent', () => {
 
     expect(component.selectedOption).toBe(TestUtilEnums.OPTION_2);
     expect(component.dropdownOpen).toBe(false);
-    expect(component.optionSelected.emit).toHaveBeenCalledWith(TestUtilEnums.OPTION_2);
+    expect(component.optionSelected.emit).toHaveBeenCalledWith(
+      TestUtilEnums.OPTION_2
+    );
     expect(event.stopPropagation).toHaveBeenCalled();
   });
 
   it('should not close the dropdown when clicking inside', () => {
     component.dropdownOpen = true;
     const event = new Event(TestUtilEnums.CLICK);
-    const insideElement = fixture.debugElement.query(By.css('.dropdown')).nativeElement;
+    const insideElement = fixture.debugElement.query(
+      By.css('.dropdown')
+    ).nativeElement;
     Object.defineProperty(event, 'target', { value: insideElement });
     component.onClickOutside(event);
     expect(component.dropdownOpen).toBe(true);
+  });
+
+  it('should reset dropdown value when table is reset', () => {
+    component.optionList = ['1', '5', '10'];
+    component.selectedOption = '5';
+
+    component.ngOnChanges({
+      tableSize: {
+        currentValue: Consts.ONE,
+        previousValue: Consts.FIVE,
+        firstChange: false,
+        isFirstChange: () => false,
+      },
+    });
+
+    expect(component.selectedOption).toBe('1');
   });
 });
