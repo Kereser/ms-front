@@ -1,20 +1,37 @@
-import { Component, EventEmitter, HostListener, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 
 @Component({
   selector: 'app-custom-dropdown',
   templateUrl: './custom-dropdown.component.html',
-  styleUrls: ['./custom-dropdown.component.scss']
+  styleUrls: ['./custom-dropdown.component.scss'],
 })
-export class CustomDropdownComponent implements OnInit {
-
+export class CustomDropdownComponent implements OnInit, OnChanges {
   @Input() optionList!: Array<string>;
   @Input() selectedOption!: string;
+  @Input() tableSize!: number;
   dropdownOpen = false;
 
   @Output() optionSelected = new EventEmitter<string>();
 
-  ngOnInit(): void { 
-    this.selectedOption = this.optionList[0];
+  ngOnInit(): void {
+    this.restoreDropdwon();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['tableSize']) {
+      if (parseInt(this.selectedOption) != this.tableSize) {
+        this.restoreDropdwon();
+      }
+    }
   }
 
   toggleDropdown() {
@@ -24,7 +41,6 @@ export class CustomDropdownComponent implements OnInit {
   selectOption(option: string, event: Event) {
     this.selectedOption = option;
     this.dropdownOpen = false;
-    console.log(option);
     this.optionSelected.emit(option);
     event.stopPropagation();
   }
@@ -35,5 +51,9 @@ export class CustomDropdownComponent implements OnInit {
     if (!target.closest('.dropdown')) {
       this.dropdownOpen = false;
     }
+  }
+
+  private restoreDropdwon() {
+    this.selectedOption = this.optionList[0];
   }
 }
