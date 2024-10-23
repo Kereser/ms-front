@@ -1,7 +1,16 @@
-<form *ngIf="formFields.length > 0" class="form form--l" [formGroup]="form" (ngSubmit)="onSubmit()">
+<form
+  *ngIf="formFields.length > 0"
+  class="form form--l"
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+>
   <ng-container *ngFor="let fieldData of formFields">
-    <app-text-input *ngIf="fieldData.type === 'input'" [config]="fieldData" [form]="form">
+    <app-text-input [config]="fieldData" [form]="form" [type]="fieldData.type">
     </app-text-input>
   </ng-container>
-  <app-button text="Submit" type="submit" [disabled]="form.invalid"></app-button>
+  <app-button
+    text="Submit"
+    type="submit"
+    [disabled]="form.invalid"
+  ></app-button>
 </form>

@@ -2,53 +2,74 @@ import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
 import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
-import { Consts, FormField, ToastTypes, ValidationConfig } from '../../../utils/Constants';
+import {
+  Consts,
+  FormField,
+  ToastTypes,
+  ValidationConfig,
+} from '../../../utils/Constants';
 import { ToastService } from '../../../shared/services/toast/toast.service';
+import { DynamicEntityTypeEnum } from './dynamic-entity-type.enum';
 
 @Component({
   selector: 'app-dynamic-form',
   templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.scss']
+  styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnChanges {
   @Input() entityType: string = '';
   form!: FormGroup;
   formFields: FormField[] = [];
 
-  constructor(private fb: FormBuilder,
+  constructor(
+    private fb: FormBuilder,
     private formDataService: FormDataService,
     private serviceFactory: EntityServiceFactory,
-    private toastService: ToastService) { }
+    private toastService: ToastService
+  ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['entityType']) {
+    if (changes[DynamicEntityTypeEnum.entityType]) {
       this.form = this.fb.group({});
-      this.onFormTypeChange(changes['entityType'].currentValue);
+      this.onFormTypeChange(
+        changes[DynamicEntityTypeEnum.entityType].currentValue
+      );
     }
   }
 
   onFormTypeChange(type: string) {
     this.formFields = this.formDataService.getFormConfiguration(type);
 
-    this.formFields.forEach(field => {
-      const validators = this.formDataService.getValidationsForFieldOnEntity(type as keyof ValidationConfig, field.name);
-      this.form.addControl(field.name, this.fb.control(field.value ?? '', validators));
+    console.log('fields', this.formFields);
+
+    this.formFields.forEach((field) => {
+      const validators = this.formDataService.getValidationsForFieldOnEntity(
+        type as keyof ValidationConfig,
+        field.name
+      );
+      this.form.addControl(
+        field.name,
+        this.fb.control(field.value ?? '', validators)
+      );
     });
   }
 
   onSubmit() {
-    const service = this.serviceFactory.getService(this.entityType);
+    const service = this.serviceFactory.getFormCreationService(this.entityType);
     const trimmedValues = this.trimFormValues(this.form.value);
 
     service.createEntity(trimmedValues).subscribe({
       next: () => {
-        this.toastService.show(ToastTypes.SUCCESS, this.entityType + ' ' + Consts.CREATED)
+        this.toastService.show(
+          ToastTypes.SUCCESS,
+          this.entityType + ' ' + Consts.CREATED
+        );
         this.resetFields();
       },
       error: (ex) => {
         ex = ex.error ?? ex;
         this.toastService.show(ToastTypes.DANGER, ex.message);
-      }
+      },
     });
   }
 
