@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { IPageableService } from '../IEntityService';
+import { IPageableService } from '../IPageableService';
 import { Observable } from 'rxjs';
 import { BrandModel } from '../../models/BrandModel';
 import { PageDTO } from '../../models/PageDTO';

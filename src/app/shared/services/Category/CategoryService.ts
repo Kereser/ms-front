@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPageableService } from '../IEntityService';
+import { IPageableService } from '../IPageableService';
 import { environment } from '../../../../environments/environment';
 import { Consts } from '../../../utils/Constants';
 import { CategoryModel } from '@app/shared/models/CategoryModel';

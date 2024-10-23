@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { PageDTO } from '../../models/PageDTO';
 import { ArticleModel } from '../../models/ArticleModel';
-import { IPageableService } from '../IEntityService';
+import { IPageableService } from '../IPageableService';
 import { environment } from '../../../../environments/environment';
 import { Consts } from '../../../utils/Constants';
 import { CategoryService } from '../Category/CategoryService';
