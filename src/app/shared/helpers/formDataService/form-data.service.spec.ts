@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { FormDataService } from './form-data.service';
-import { Consts, EntityFields, ValidationConfig, Validations } from '../../../utils/Constants';
+import { Consts, EntityFields, FormField, ValidationConfig, Validations } from '../../../utils/Constants';
 import { ValidatorFn } from '@angular/forms';
 
 describe('FormDataService', () => {
@@ -15,16 +15,16 @@ describe('FormDataService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should generate form configuration with labels capitalized and values empty', () => {
+  it('should generate formFields with empty initial value', () => {
     const fields: EntityFields[] = [
-      { name: Consts.TEST_FIELD, type: Consts.TYPE_INPUT },
+      { name: Consts.TEST_FIELD, type: Consts.TYPE_TEXT },
       { name: Consts.NAME, type: Consts.TYPE_SELECT }
     ];
     const generatedConfig = service['generateFormConfiguration'](fields);
     expect(generatedConfig).toEqual([
-      { name: Consts.TEST_FIELD, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.TEST_FIELD } as any,
-      { name: Consts.NAME, type: Consts.TYPE_SELECT, value: Consts.EMPTY, label: Consts.NAME } as any
-    ]);
+      { name: Consts.TEST_FIELD, type: Consts.TYPE_TEXT, value: Consts.EMPTY },
+      { name: Consts.NAME, type: Consts.TYPE_SELECT, value: Consts.EMPTY }
+    ] as FormField[]);
   });
 
   it('should return an empty array if generateFormConfiguration receives undefined', () => {
@@ -42,9 +42,9 @@ describe('FormDataService', () => {
   it('should get form configuration for a given type', () => {
     const result = service.getFormConfiguration(Consts.CATEGORY);
     expect(result).toEqual([
-      { name: Consts.NAME, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.NAME } as any,
-      { name: Consts.DESCRIPTION, type: Consts.TYPE_INPUT, value: Consts.EMPTY, label: Consts.DESCRIPTION }
-    ]);
+      { name: Consts.NAME, type: Consts.TYPE_TEXT, value: Consts.EMPTY },
+      { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT, value: Consts.EMPTY }
+    ] as FormField[]);
   });
 
   it('should return an empty array if getFormConfiguration does not find the type', () => {
