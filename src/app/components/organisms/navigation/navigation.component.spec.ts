@@ -3,9 +3,10 @@ import { NavigationComponent } from './navigation.component';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
-import { Constants, TestConstants, TestUtilEnums } from '../../../utils/TestConstants';
+import { TestConstants, TestUtilEnums } from '../../../utils/TestConstants';
 import { Location } from '@angular/common';
 import { Component } from '@angular/core';
+import { Consts } from '../../../utils/Constants';
 
 @Component({ template: '' })
 class DummyComponent {}
@@ -25,7 +26,6 @@ describe('NavigationComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(NavigationComponent);
     component = fixture.componentInstance;
-    router = TestBed.inject(Router);
     fixture.detectChanges();
   });
 
@@ -35,10 +35,10 @@ describe('NavigationComponent', () => {
 
   it('should render Create options', () => {
     const createOptions = fixture.debugElement.queryAll(By.css('.navigation__inner-list a'));
-    expect(createOptions.length).toBe(Constants.SIX);
-    expect(createOptions[Constants.ZERO].nativeElement.textContent).toBe(TestUtilEnums.CREATE_BRAND);
-    expect(createOptions[Constants.ONE].nativeElement.textContent).toBe(TestUtilEnums.CREATE_CATEGORY);
-    expect(createOptions[Constants.TWO].nativeElement.textContent).toBe(TestUtilEnums.CREATE_ARTICLE);
+    expect(createOptions.length).toBe(Consts.SEVEN);
+    expect(createOptions[Consts.ZERO].nativeElement.textContent).toBe(TestUtilEnums.CREATE_BRAND);
+    expect(createOptions[Consts.ONE].nativeElement.textContent).toBe(TestUtilEnums.CREATE_CATEGORY);
+    expect(createOptions[Consts.TWO].nativeElement.textContent).toBe(TestUtilEnums.CREATE_ARTICLE);
   });
 
   it('should render Dashboard links', () => {
