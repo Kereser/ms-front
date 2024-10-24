@@ -22,6 +22,11 @@ const routes: Routes = [
         (m) => m.DashbaordPageModule
       ),
   },
+  {
+    path: 'login',
+    loadChildren: () =>
+      import('./router/auth/auth.module').then((m) => m.AuthModule),
+  },
 ];
 
 @NgModule({
