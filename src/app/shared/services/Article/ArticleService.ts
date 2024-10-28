@@ -33,7 +33,7 @@ export type ArticleRequest = {
 @Injectable({
   providedIn: 'root',
 })
-export class ArticleService implements IDynamicFormEntity, IPageableService {
+export class ArticleService implements IPageableService {
   private baseURL = environment.STOCK_BASE_URL + Consts.ARTICLES_PATH;
 
   categoryList!: CategoryModel[];
@@ -45,7 +45,7 @@ export class ArticleService implements IDynamicFormEntity, IPageableService {
     private brandService: BrandService
   ) {}
 
-  createEntity(entity: ArticleForm): Observable<any> {
+  createArticle(entity: ArticleForm): Observable<any> {
     console.log(entity);
 
     return this.categoryService.getByNames(entity[Consts.CATEGORY_NAMES]).pipe(

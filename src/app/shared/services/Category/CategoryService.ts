@@ -21,13 +21,13 @@ export type CategoryRequest = {
 @Injectable({
   providedIn: 'root',
 })
-export class CategoryService implements IDynamicFormEntity, IPageableService {
+export class CategoryService implements IPageableService {
   private baseURL = environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH;
   private byNameURL = this.baseURL + Consts.BY_NAMES_PATH;
 
   constructor(private http: HttpClient) {}
 
-  createEntity(category: CategoryFrom): Observable<any> {
+  createCategory(category: CategoryFrom): Observable<unknown> {
     return this.http.post(this.baseURL, category);
   }
 

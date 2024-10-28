@@ -21,13 +21,13 @@ export type BrandRequest = {
 @Injectable({
   providedIn: 'root',
 })
-export class BrandService implements IDynamicFormEntity, IPageableService {
+export class BrandService implements IPageableService {
   private baseURL = environment.STOCK_BASE_URL + Consts.BRAND_PATH;
   private byNameURL = this.baseURL + Consts.BY_NAMES_PATH;
 
   constructor(private http: HttpClient) {}
 
-  createEntity(brand: BrandForm): Observable<any> {
+  createBrand(brand: BrandForm): Observable<any> {
     return this.http.post(this.baseURL, brand);
   }
 
