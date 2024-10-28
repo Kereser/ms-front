@@ -24,6 +24,9 @@ export const Consts = {
   TYPE_PASSWORD: 'password',
   TYPE_SELECT: 'select',
 
+  TOKEN: 'token',
+
+  USERNAME: 'username',
   NAME: 'name',
   DESCRIPTION: 'description',
   LAST_NAME: 'last name',
@@ -77,11 +80,17 @@ export const Consts = {
   HEADER_SELECTOR: 'app-header',
   FORM_SELECTOR: 'app-form-create',
 
+  LOGIN: 'login',
+  LOGIN_URL: '/login',
+  SING_UP: 'sign up',
+  SINGUP: 'signup',
+  CLIENT_URL: '/client',
   CREATE_PATH: 'create',
   DASHBOARD_PATH: 'dashboard',
   INVIDIVUAL_DASHBOARD_PATH: 'dashboard/:type',
   REDIRECT_DASHBOARD_PATH: '/dashboard',
   DASHBOARD_CATEGORY_PATH: '/dashboard/category',
+  AUTH_LOGIN_PATH: 'auth/login',
   CATEGORIES_PATH: '/categories',
   BY_NAMES_PATH: '/by-names',
   BRAND_PATH: '/brands',
@@ -122,6 +131,7 @@ export const Consts = {
   NUMBERS_REGEX: /^\d+$/,
   CHARACTERS_REGEX: /^\w*$/,
   PHONE_NUMBER_REGEX: /^(?:\+?(\d){2})?\d{10}$/,
+  PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?!.*\s).{7,}$/,
 } as const;
 
 export enum Direcitons {
@@ -137,7 +147,9 @@ export interface ValidationConfig {
   brand: ValidationRules;
   category: ValidationRules;
   article: ValidationRules;
-  'aux-depot': ValidationErrors;
+  'aux-depot': ValidationRules;
+  login: ValidationRules;
+  signup: ValidationRules;
 }
 
 const applyTest = (regex: RegExp, val: string) => {
@@ -146,6 +158,12 @@ const applyTest = (regex: RegExp, val: string) => {
   }
 
   return null;
+};
+
+const isValidPassword = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.valid ? control.value : Consts.EMPTY;
+
+  return applyTest(Consts.PASSWORD_REGEX, value);
 };
 
 const validCategories = (control: AbstractControl): ValidationErrors | null => {
@@ -173,7 +191,7 @@ const isOlderValidator = (
 };
 
 export const Validations: ValidationConfig = {
-  brand: {
+  [Consts.BRAND]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
@@ -185,7 +203,7 @@ export const Validations: ValidationConfig = {
       Validators.required,
     ],
   },
-  category: {
+  [Consts.CATEGORY]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
@@ -197,7 +215,7 @@ export const Validations: ValidationConfig = {
       Validators.required,
     ],
   },
-  article: {
+  [Consts.ARTICLE]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
@@ -217,14 +235,41 @@ export const Validations: ValidationConfig = {
       Validators.minLength(Consts.FIVE),
     ],
   },
-  'aux-depot': {
+  [Consts.AUX_DEPOT]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
       Validators.maxLength(Consts.FIFTY),
     ],
     email: [Validators.required, Validators.email],
-    password: [Validators.required],
+    password: [isValidPassword],
+    'last name': [
+      Validators.maxLength(Consts.TWENTY),
+      Validators.minLength(Consts.THREE),
+      Validators.required,
+    ],
+    'id number': [
+      Validators.required,
+      Validators.pattern(Consts.NUMBERS_REGEX),
+    ],
+    'phone number': [
+      Validators.required,
+      Validators.pattern(Consts.PHONE_NUMBER_REGEX),
+    ],
+    'birth date': [Validators.required, isOlderValidator],
+  },
+  [Consts.LOGIN]: {
+    username: [Validators.required],
+    password: [isValidPassword],
+  },
+  [Consts.SINGUP]: {
+    name: [
+      Validators.required,
+      Validators.minLength(Consts.THREE),
+      Validators.maxLength(Consts.FIFTY),
+    ],
+    email: [Validators.required, Validators.email],
+    password: [isValidPassword],
     'last name': [
       Validators.maxLength(Consts.TWENTY),
       Validators.minLength(Consts.THREE),
@@ -243,23 +288,23 @@ export const Validations: ValidationConfig = {
 };
 
 export class Constants {
-  static FORM_CONFIGURATIONS = new Map<string, Array<FormField>>([
+  static entityToFormFieldsMap = new Map<string, Array<FormField>>([
     [
-      'brand',
+      Consts.BRAND,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT },
       ],
     ],
     [
-      'category',
+      Consts.CATEGORY,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT },
       ],
     ],
     [
-      'article',
+      Consts.ARTICLE,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT },
@@ -270,7 +315,26 @@ export class Constants {
       ],
     ],
     [
-      'aux-depot',
+      Consts.AUX_DEPOT,
+      [
+        { name: Consts.NAME, type: Consts.TYPE_TEXT },
+        { name: Consts.LAST_NAME, type: Consts.TYPE_TEXT },
+        { name: Consts.ID_NUMBER, type: Consts.TYPE_TEXT },
+        { name: Consts.PHONE_NUMBER, type: Consts.TYPE_TEXT },
+        { name: Consts.BIRTH_DATE, type: Consts.TYPE_DATE },
+        { name: Consts.EMAIL, type: Consts.TYPE_TEXT },
+        { name: Consts.PASSWORD, type: Consts.TYPE_PASSWORD },
+      ],
+    ],
+    [
+      Consts.LOGIN,
+      [
+        { name: Consts.USERNAME, type: Consts.TYPE_TEXT },
+        { name: Consts.PASSWORD, type: Consts.TYPE_PASSWORD },
+      ],
+    ],
+    [
+      Consts.SINGUP,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.LAST_NAME, type: Consts.TYPE_TEXT },
