@@ -5,7 +5,7 @@ import { Consts } from './utils/Constants';
 const routes: Routes = [
   {
     path: Consts.EMPTY,
-    redirectTo: Consts.DASHBOARD_CATEGORY_PATH,
+    redirectTo: 'auth/login',
     pathMatch: 'full',
   },
   {
@@ -23,7 +23,7 @@ const routes: Routes = [
       ),
   },
   {
-    path: 'login',
+    path: 'auth',
     loadChildren: () =>
       import('./router/auth/auth.module').then((m) => m.AuthModule),
   },
