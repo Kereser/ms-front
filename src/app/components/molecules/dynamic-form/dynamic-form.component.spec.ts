@@ -2,34 +2,32 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DynamicFormComponent } from './dynamic-form.component';
 import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
-import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { Consts, ToastTypes } from '../../../utils/Constants';
+import { Consts, StatusCodes, ToastTypes } from '../../../utils/Constants';
 import { ToastService } from '../../../shared/services/toast/toast.service';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { IDynamicFormEntity } from '@app/shared/services/IDynamicFormEntity';
 import { of, throwError } from 'rxjs';
+import { FORM_ACTION } from '@app/shared/token/injection-token.provider';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('DynamicFormComponent', () => {
   let component: DynamicFormComponent;
   let fixture: ComponentFixture<DynamicFormComponent>;
   let formDataService: FormDataService;
-  let serviceFactory: EntityServiceFactory;
   let toastService: ToastService;
-  let entityServiceMock: IDynamicFormEntity;
+  const executable = jest.fn();
 
   beforeEach(async () => {
-    entityServiceMock = {
-      createEntity: () => of({}),
-    };
-
     await TestBed.configureTestingModule({
       declarations: [DynamicFormComponent],
       imports: [ReactiveFormsModule, HttpClientTestingModule],
       providers: [
         { provide: FormDataService },
-        { provide: EntityServiceFactory },
         { provide: ToastService },
+        {
+          provide: FORM_ACTION,
+          useValue: executable,
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
@@ -38,9 +36,9 @@ describe('DynamicFormComponent', () => {
   beforeEach(() => {
     toastService = TestBed.inject(ToastService);
     formDataService = TestBed.inject(FormDataService);
-    serviceFactory = TestBed.inject(EntityServiceFactory);
     fixture = TestBed.createComponent(DynamicFormComponent);
     component = fixture.componentInstance;
+    executable.mockClear();
   });
 
   it('should create', () => {
@@ -51,6 +49,7 @@ describe('DynamicFormComponent', () => {
     const formFields = [
       { name: Consts.NAME, type: Consts.TYPE_INPUT, value: Consts.EMPTY },
     ];
+
     jest
       .spyOn(formDataService, 'getFormConfiguration')
       .mockReturnValue(formFields);
@@ -71,10 +70,9 @@ describe('DynamicFormComponent', () => {
   });
 
   it('should call createEntity on submit', () => {
-    jest
-      .spyOn(serviceFactory, 'getFormCreationService')
-      .mockReturnValue(entityServiceMock);
-    jest.spyOn(entityServiceMock, 'createEntity');
+    executable.mockReturnValue(of({}));
+    jest.spyOn(formDataService, 'getFormConfiguration');
+    jest.spyOn(toastService, 'show');
 
     component.entityType = Consts.TEST_ENTITY;
     component.form = new FormGroup({});
@@ -87,41 +85,30 @@ describe('DynamicFormComponent', () => {
 
     component.onSubmit();
 
-    expect(serviceFactory.getFormCreationService).toHaveBeenCalledWith(
-      Consts.TEST_ENTITY
+    expect(executable).toHaveBeenCalledWith(formValue);
+    expect(toastService.show).toHaveBeenCalledWith(
+      ToastTypes.SUCCESS,
+      `${Consts.TEST_ENTITY} ${Consts.CREATED}`
     );
-    expect(entityServiceMock.createEntity).toHaveBeenCalledWith(formValue);
+    expect(component.form.get(Consts.NAME)?.value).toBeNull();
   });
 
-  it('should handle error on submit', () => {
-    const error = { message: Consts.ERROR_ON_CREATE_ENTITY };
-    jest
-      .spyOn(serviceFactory, 'getFormCreationService')
-      .mockReturnValue(entityServiceMock);
-    jest
-      .spyOn(entityServiceMock, 'createEntity')
-      .mockReturnValue(throwError(() => error));
-    jest.spyOn(toastService, 'show');
-
-    component.entityType = Consts.TEST_ENTITY;
-    component.form = new FormGroup({});
-    component.form.addControl(
-      Consts.NAME,
-      component['fb'].control(Consts.TEST_ENTITY)
+  it('should handle forbidden error on submit', () => {
+    executable.mockReturnValue(
+      throwError(() => new HttpErrorResponse({ status: StatusCodes.Forbidden }))
     );
+    jest.spyOn(toastService, 'show');
 
     component.onSubmit();
 
     expect(toastService.show).toHaveBeenCalledWith(
       ToastTypes.DANGER,
-      Consts.ERROR_ON_CREATE_ENTITY
+      Consts.UNAUTHORIZED_USER_ERROR
     );
   });
 
   it('should reset the form on submit', () => {
-    jest
-      .spyOn(serviceFactory, 'getFormCreationService')
-      .mockReturnValue(entityServiceMock);
+    executable.mockReturnValue(of({}));
 
     component.entityType = Consts.TEST_ENTITY;
     component.form = new FormGroup({});
@@ -133,5 +120,37 @@ describe('DynamicFormComponent', () => {
     component.onSubmit();
 
     expect(component.form.get(Consts.NAME)?.value).toBeNull();
+  });
+
+  it('should handle unexpected error on submit', () => {
+    executable.mockReturnValue(
+      throwError(
+        () => new HttpErrorResponse({ status: StatusCodes.Unauthorized })
+      )
+    );
+    jest.spyOn(toastService, 'show');
+
+    component.onSubmit();
+
+    expect(toastService.show).toHaveBeenCalledWith(
+      ToastTypes.DANGER,
+      Consts.WRONG_CREDENTIALS
+    );
+  });
+
+  it('should handle unexpected error on submit', () => {
+    executable.mockReturnValue(
+      throwError(
+        () => new HttpErrorResponse({ status: StatusCodes.InternalServerError })
+      )
+    );
+    jest.spyOn(toastService, 'show');
+
+    component.onSubmit();
+
+    expect(toastService.show).toHaveBeenCalledWith(
+      ToastTypes.DANGER,
+      Consts.UNEXPECTED_ERROR
+    );
   });
 });

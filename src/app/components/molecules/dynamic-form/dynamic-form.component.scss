@@ -1,13 +1,20 @@
 .form {
-	&--std {
-		width: 650px;
-	}
+  &--std {
+    width: 650px;
+  }
 
-	&--m {
-		width: 163px;
-	}
+  &--m {
+    width: 163px;
+  }
 
-	&--l {
-		width: 250px;
-	}
+  &--l {
+    width: 450px;
+  }
+
+  display: flex;
+  flex-direction: column;
+
+  ::ng-deep > app-button {
+    margin: 0 auto;
+  }
 }
