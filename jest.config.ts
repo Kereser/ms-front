@@ -6,17 +6,20 @@ module.exports = {
     'ts-jest': {
       tsconfig: '<rootDir>/tsconfig.spec.json',
       stringifyContentPathRegex: '\\.html$',
-      isolatedModules: true
-    }
+      isolatedModules: true,
+    },
+  },
+  moduleNameMapper: {
+    '^@app/(.*)$': '<rootDir>/src/app/$1',
   },
   moduleFileExtensions: ['ts', 'html', 'js', 'json', 'mjs'],
   transform: {
-    '^.+\\.(ts|html)$': 'jest-preset-angular'
+    '^.+\\.(ts|html)$': 'jest-preset-angular',
   },
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
   snapshotSerializers: [
     'jest-preset-angular/build/serializers/no-ng-attributes',
     'jest-preset-angular/build/serializers/ng-snapshot',
-    'jest-preset-angular/build/serializers/html-comment'
-  ]
+    'jest-preset-angular/build/serializers/html-comment',
+  ],
 };
