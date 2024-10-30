@@ -1,15 +1,22 @@
 import {
   Component,
+  Inject,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { PageDTO } from '@app/shared/models/PageDTO';
-import { IPageableService, Model } from '@app/shared/services/IPageableService';
-import { Consts, Direcitons, ToastTypes } from '../../../utils/Constants';
-import { ToastService } from '../../../shared/services/toast/toast.service';
+import {
+  Consts,
+  Direcitons,
+  OnChangesType,
+  ToastTypes,
+} from '@app/utils/Constants';
+import { ToastService } from '@app/shared/services/toast/toast.service';
+import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
+import { Observable } from 'rxjs';
+import { Model } from '@app/shared/services/IPageableService';
 
 @Component({
   selector: 'app-table',
@@ -20,18 +27,23 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() headers: string[] = [];
   @Input() clickableHeaders: string[] = [Consts.NAME];
   @Input() entityName!: string;
-  @Input() pageSize: number = Consts.ONE;
-  @Input() page: number = Consts.ZERO;
+  @Input() pageSize: number = Consts.FIVE;
+  @Input() page: number = Consts.ONE;
 
   pageDTO!: PageDTO<Model>;
-  entityService!: IPageableService;
 
   direction: Direcitons = Direcitons.ASC;
   column: string = Consts.NAME;
 
   constructor(
-    private serviceFactory: EntityServiceFactory,
-    private toastService: ToastService
+    private toastService: ToastService,
+    @Inject(TABLE_ACTTION)
+    private executable: (
+      page: number,
+      pageSize: number,
+      column: string,
+      direction: Direcitons
+    ) => Observable<PageDTO<Model>>
   ) {}
 
   ngOnInit(): void {
@@ -39,26 +51,30 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['entityName']) {
-      this.entityName = changes['entityName'].currentValue;
+    if (changes[OnChangesType.ENTITY_NAME]) {
+      this.entityName = changes[OnChangesType.ENTITY_NAME].currentValue;
       this.reloadDashboard();
     }
   }
 
   loadData(): void {
-    this.entityService
-      .getEntityPage(this.page, this.pageSize, this.column, this.direction)
-      .subscribe({
-        next: (pageData: PageDTO<Model>) => {
-          this.pageDTO = pageData;
-        },
-        error: (_) => {
-          this.toastService.show(
-            ToastTypes.DANGER,
-            'An error occurred while loading data'
-          );
-        },
-      });
+    this.executable(
+      this.page,
+      this.pageSize,
+      this.column,
+      this.direction
+    ).subscribe({
+      next: (pageData: PageDTO<Model>) => {
+        this.pageDTO = pageData;
+      },
+      error: (ex) => {
+        console.log('entro al error: ', ex);
+        this.toastService.show(
+          ToastTypes.DANGER,
+          Consts.ERROR_WHILE_LOADING_DATA
+        );
+      },
+    });
   }
 
   onSort(field: string): void {
@@ -68,20 +84,12 @@ export class TableComponent implements OnInit, OnChanges {
     this.loadData();
   }
 
-  private setColumn(field: string) {
-    if (field.toLowerCase() === Consts.CATEGORIES.toLowerCase()) {
-      this.column = Consts.SORT_CATEGORY_NAMES;
-      return;
-    }
-    this.column = field.toLowerCase();
-  }
-
   onPageChange(page: number | string): void {
     this.page = page as number;
     this.loadData();
   }
 
-  getValue(row: Model, header: string): any {
+  getValue(row: Model, header: string) {
     const value = (row as any)[header.toLowerCase()];
     if (Array.isArray(value)) {
       return value.map((item) => item.name).join(', ');
@@ -111,6 +119,14 @@ export class TableComponent implements OnInit, OnChanges {
 
   getDisplayableValue(page: number | string) {
     return (page as number) + 1;
+  }
+
+  private setColumn(field: string) {
+    if (field.toLowerCase() === Consts.CATEGORIES.toLowerCase()) {
+      this.column = Consts.SORT_CATEGORY_NAMES;
+      return;
+    }
+    this.column = field.toLowerCase();
   }
 
   private getReverseSort(order: string): Direcitons {
@@ -155,9 +171,6 @@ export class TableComponent implements OnInit, OnChanges {
   }
 
   private reloadDashboard() {
-    this.entityService = this.serviceFactory.getPageableService(
-      this.entityName
-    );
     this.reloadFilters();
     this.loadData();
   }
@@ -166,6 +179,5 @@ export class TableComponent implements OnInit, OnChanges {
     this.column = Consts.NAME;
     this.direction = Direcitons.ASC;
     this.page = Consts.ZERO;
-    this.pageSize = Consts.ONE;
   }
 }
