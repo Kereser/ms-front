@@ -55,5 +55,6 @@ export class CustomDropdownComponent implements OnInit, OnChanges {
 
   private restoreDropdwon() {
     this.selectedOption = this.optionList[0];
+    this.optionSelected.emit(this.selectedOption);
   }
 }
