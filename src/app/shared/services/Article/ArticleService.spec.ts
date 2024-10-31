@@ -29,7 +29,6 @@ describe('ArticleService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ArticleService, CategoryService, BrandService],
     });
 
     service = TestBed.inject(ArticleService);
@@ -68,7 +67,7 @@ describe('ArticleService', () => {
       .spyOn(brandService, 'getByName')
       .mockReturnValue(of([{ id: 1, name: 'Brand1' }] as BrandModel[]));
 
-    service.createEntity(mockEntity).subscribe({
+    service.createArticle(mockEntity).subscribe({
       next: () => fail('expected an error, not an entity'),
       error: (error) => {
         expect(error.error.message).toBe(Consts.FIELD_VALIDATION_ERRORS);
@@ -138,7 +137,7 @@ describe('ArticleService', () => {
       .spyOn(brandService, 'getByName')
       .mockReturnValue(of([{ id: 1, name: 'Brand1' }] as BrandModel[]));
 
-    service.createEntity(mockEntity).subscribe({});
+    service.createArticle(mockEntity).subscribe({});
 
     const req = httpMock.expectOne(
       `${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}`
@@ -173,7 +172,7 @@ describe('ArticleService', () => {
       .spyOn(categoryService, 'getByNames')
       .mockReturnValue(of([{ id: 1, name: 'Category1' }] as CategoryModel[]));
 
-    service.createEntity(mockEntity).subscribe({
+    service.createArticle(mockEntity).subscribe({
       next: () => done.fail('Expected an error, but got a successful response'),
       error: (data) => {
         expect(data.message).toBe(Consts.CATEGORIES_NOT_FOUND);
@@ -204,7 +203,7 @@ describe('ArticleService', () => {
       .spyOn(brandService, 'getByName')
       .mockReturnValue(of([] as BrandModel[]));
 
-    service.createEntity(mockEntity).subscribe({
+    service.createArticle(mockEntity).subscribe({
       next: () => done.fail('Expected an error, but got a successful response'),
       error: (data) => {
         expect(data.message).toBe(Consts.BRANDS_NOT_FOUND);
@@ -235,7 +234,7 @@ describe('ArticleService', () => {
     };
 
     service
-      .createEntity(mockEntity)
+      .createArticle(mockEntity)
       .subscribe((res) => expect(res).toBeTruthy());
 
     const categoryReq = httpMock.expectOne(

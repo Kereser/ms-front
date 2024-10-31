@@ -1,0 +1,13 @@
+<app-auth-layout>
+  <app-header header>
+    <app-button
+      [text]="getButtonTxt()"
+      (click)="switchView()"
+      button
+    ></app-button>
+  </app-header>
+  <div class="auth-container">
+    <h2>{{ authType | capitalize }} page</h2>
+    <app-dynamic-form [entityType]="authType"></app-dynamic-form>
+  </div>
+</app-auth-layout>

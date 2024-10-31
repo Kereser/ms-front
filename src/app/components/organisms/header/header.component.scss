@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 .header {
   display: flex;
@@ -22,12 +22,6 @@
 
   &__search input:focus {
     outline: none;
-    border: 1px solid #9D3FE7;
-  }
-
-  &__sign {
-    app-button {
-      color: white;
-    }
+    border: 1px solid #9d3fe7;
   }
 }

@@ -1,4 +1,7 @@
 <app-main-layout>
+  <app-header-with-options header>
+    <app-button text="Logout" (click)="logout()" button></app-button>
+  </app-header-with-options>
   <app-table
     [headers]="entityHeaders"
     [entityName]="entityType"

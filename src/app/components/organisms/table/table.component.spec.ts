@@ -5,53 +5,66 @@ import {
   tick,
 } from '@angular/core/testing';
 import { TableComponent } from './table.component';
-import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
 import { of, throwError } from 'rxjs';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ArticleModel } from '@app/shared/models/ArticleModel';
 
-import { jest } from '@jest/globals';
-import { Consts, Direcitons, ToastTypes } from '../../../utils/Constants';
+import {
+  Consts,
+  Direcitons,
+  StatusCodes,
+  ToastTypes,
+} from '@app/utils/Constants';
 import { Pageable, PageDTO } from '@app/shared/models/PageDTO';
 import { CategoryModel } from '@app/shared/models/CategoryModel';
 import { BrandModel } from '@app/shared/models/BrandModel';
 import { Model } from '@app/shared/services/IPageableService';
-import { CapitalizePipe } from '../../../shared/pipes/capitalize.pipe';
-import { ToastService } from '../../../shared/services/toast/toast.service';
+import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
+import { ToastService } from '@app/shared/services/toast/toast.service';
+import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
+import { HttpErrorResponse } from '@angular/common/http';
 
 describe('TableComponent', () => {
   let component: TableComponent;
   let fixture: ComponentFixture<TableComponent>;
-  let serviceFactory: EntityServiceFactory;
   let toastService: ToastService;
+  let executable = jest.fn();
 
   beforeEach(async () => {
-    const entityServiceFactoryMock = {
-      getPageableService: () => ({
-        getEntityPage: () =>
-          of({
-            content: [{ name: 'Entity1' }, { name: 'Entity2' }],
-            totalPages: Consts.ONE,
-          }),
-      }),
-    };
+    executable.mockImplementation((page, pageSize, column, direction) => {
+      return of({
+        totalElements: 20,
+        totalPages: 10,
+        pageable: { pageNumber: page, pageSize, offset: page * pageSize },
+        numberOfElements: pageSize,
+        currentPage: page,
+        size: pageSize,
+        first: page === 0,
+        last: page === 9,
+        content: [],
+      } as PageDTO<Model>);
+    });
 
     await TestBed.configureTestingModule({
       declarations: [TableComponent, CapitalizePipe],
       providers: [
-        { provide: EntityServiceFactory, useValue: entityServiceFactoryMock },
+        {
+          provide: TABLE_ACTTION,
+          useValue: executable,
+        },
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TableComponent);
     component = fixture.componentInstance;
-    serviceFactory = TestBed.inject(EntityServiceFactory);
     toastService = TestBed.inject(ToastService);
 
     component.entityName = Consts.TEST_ENTITY;
     component.headers = [Consts.NAME];
     fixture.detectChanges();
+
+    executable.mockClear();
   });
 
   it('should create', () => {
@@ -59,12 +72,16 @@ describe('TableComponent', () => {
   });
 
   it('should load data on init', () => {
+    executable.mockReturnValue(of({}));
+
     jest.spyOn(component, 'loadData').mockImplementation(() => {});
     component.ngOnInit();
     expect(component.loadData).toHaveBeenCalledTimes(Consts.ONE);
   });
 
   it('should sort data', () => {
+    executable.mockReturnValue(of({}));
+
     component.direction = Direcitons.ASC;
     component.onSort(Consts.NAME);
     expect(component.direction).toBe(Direcitons.DESC);
@@ -82,18 +99,18 @@ describe('TableComponent', () => {
   });
 
   it('should handle error on load data', () => {
-    const errorResponse = new ErrorEvent('Network error');
-
     jest.spyOn(toastService, 'show');
-    jest
-      .spyOn(component['entityService'], 'getEntityPage')
-      .mockReturnValue(throwError(() => errorResponse));
+    executable.mockReturnValue(
+      throwError(
+        () => new HttpErrorResponse({ status: StatusCodes.InternalServerError })
+      )
+    );
 
     component.loadData();
 
     expect(toastService.show).toHaveBeenCalledWith(
       ToastTypes.DANGER,
-      'An error occurred while loading data'
+      Consts.ERROR_WHILE_LOADING_DATA
     );
   });
 
@@ -134,8 +151,6 @@ describe('TableComponent', () => {
   });
 
   it('should handle changes in entityName', fakeAsync(() => {
-    const getServiceSpy = jest.spyOn(serviceFactory, 'getPageableService');
-
     component.ngOnChanges({
       entityName: {
         currentValue: 'brand',
@@ -146,28 +161,28 @@ describe('TableComponent', () => {
     });
     tick();
 
-    expect(getServiceSpy).toHaveBeenCalledWith('brand');
     expect(component.entityName).toBe('brand');
   }));
 
   it('should handle pagination correctly when total pages are more than 5 and current page is at the start', () => {
+    executable.mockImplementation((page, pageSize, column, direction) => {
+      return of({
+        totalElements: Consts.TWO,
+        totalPages: 10,
+        pageable: pageable,
+        numberOfElements: Consts.TWO,
+        currentPage: Consts.ONE,
+        size: Consts.TWO,
+        first: true,
+        last: true,
+        content: [],
+      } as PageDTO<Model>);
+    });
     const pageable: Pageable = {
       pageNumber: Consts.ZERO,
       pageSize: Consts.TWO,
       offset: Consts.ZERO,
     };
-
-    component.pageDTO = {
-      totalElements: Consts.TWO,
-      totalPages: 10,
-      pageable: pageable,
-      numberOfElements: Consts.TWO,
-      currentPage: Consts.ONE,
-      size: Consts.TWO,
-      first: true,
-      last: true,
-      content: [],
-    } as PageDTO<Model>;
 
     const result = component.getMiddleRange();
     expect(result).toEqual([Consts.ZERO, Consts.ONE, Consts.TWO, 3, '...', 9]);
@@ -215,8 +230,44 @@ describe('TableComponent', () => {
       content: [],
     } as PageDTO<ArticleModel | CategoryModel | BrandModel>;
 
-    console.log('serviceFActory ', serviceFactory);
     const result = component.getMiddleRange();
     expect(result).toEqual([Consts.ZERO, '...', 4, 5, 6, '...', 9]);
+  });
+
+  it('should handle pagination correctly when total pages are less than 5 and current page is at start', () => {
+    executable.mockImplementation((page, pageSize, column, direction) => {
+      return of({
+        totalElements: Consts.TWO,
+        totalPages: 5,
+        pageable: pageable,
+        numberOfElements: Consts.TWO,
+        currentPage: Consts.ONE,
+        size: Consts.TWO,
+        first: true,
+        last: true,
+        content: [],
+      } as PageDTO<Model>);
+    });
+
+    const pageable: Pageable = {
+      pageNumber: Consts.ZERO,
+      pageSize: Consts.TWO,
+      offset: Consts.ZERO,
+    };
+
+    component.pageDTO = {
+      totalElements: Consts.TWO,
+      totalPages: 5,
+      pageable: pageable,
+      numberOfElements: Consts.TWO,
+      currentPage: 5,
+      size: Consts.TWO,
+      first: true,
+      last: true,
+      content: [],
+    } as PageDTO<ArticleModel | CategoryModel | BrandModel>;
+
+    const result = component.getMiddleRange();
+    expect(result).toEqual([0, 1, 2, 3, 4]);
   });
 });

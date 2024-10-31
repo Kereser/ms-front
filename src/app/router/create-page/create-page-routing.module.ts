@@ -2,27 +2,32 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { CreatePageComponent } from '@app/components/pages/admin/create-page/create-page.component';
 import { Consts } from '../../utils/Constants';
+import { RolesGuard } from '@app/shared/guards/roles.guard';
 
 const routes: Routes = [
   {
     path: Consts.CATEGORY,
     component: CreatePageComponent,
-    data: { type: Consts.CATEGORY },
+    canActivate: [RolesGuard],
+    data: { type: Consts.CATEGORY, roles: [Consts.ADMIN] },
   },
   {
     path: Consts.BRAND,
     component: CreatePageComponent,
-    data: { type: Consts.BRAND },
+    canActivate: [RolesGuard],
+    data: { type: Consts.BRAND, roles: [Consts.ADMIN] },
   },
   {
     path: Consts.ARTICLE,
     component: CreatePageComponent,
-    data: { type: Consts.ARTICLE },
+    canActivate: [RolesGuard],
+    data: { type: Consts.ARTICLE, roles: [Consts.ADMIN] },
   },
   {
     path: Consts.AUX_DEPOT,
     component: CreatePageComponent,
-    data: { type: Consts.AUX_DEPOT },
+    canActivate: [RolesGuard],
+    data: { type: Consts.AUX_DEPOT, roles: [Consts.ADMIN] },
   },
 ];
 

@@ -5,22 +5,27 @@ import { Consts } from './utils/Constants';
 const routes: Routes = [
   {
     path: Consts.EMPTY,
-    redirectTo: Consts.DASHBOARD_CATEGORY_PATH,
+    redirectTo: 'auth/login',
     pathMatch: 'full',
   },
   {
-    path: Consts.CREATE_PATH,
+    path: Consts.CREATE,
     loadChildren: () =>
       import('./router/create-page/create-page.module').then(
         (m) => m.CreatePageModule
       ),
   },
   {
-    path: Consts.DASHBOARD_PATH,
+    path: Consts.DASHBOARD,
     loadChildren: () =>
       import('./router/dashbaord-page/dashbaord-page.module').then(
         (m) => m.DashbaordPageModule
       ),
+  },
+  {
+    path: Consts.AUTH,
+    loadChildren: () =>
+      import('./router/auth/auth.module').then((m) => m.AuthModule),
   },
 ];
 

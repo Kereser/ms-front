@@ -1,15 +1,24 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  Inject,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { FormDataService } from '../../../shared/helpers/formDataService/form-data.service';
-import { EntityServiceFactory } from '../../../shared/helpers/entityService/EntityServiceFactory';
+import { FormDataService } from '@app/shared/helpers/formDataService/form-data.service';
 import {
   Consts,
   FormField,
+  OnChangesType,
+  StatusCodes,
   ToastTypes,
   ValidationConfig,
-} from '../../../utils/Constants';
-import { ToastService } from '../../../shared/services/toast/toast.service';
-import { DynamicEntityTypeEnum } from './dynamic-entity-type.enum';
+} from '@app/utils/Constants';
+import { ToastService } from '@app/shared/services/toast/toast.service';
+import { FORM_ACTION } from '@app/shared/token/injection-token.provider';
+import { Observable } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -24,23 +33,20 @@ export class DynamicFormComponent implements OnChanges {
   constructor(
     private fb: FormBuilder,
     private formDataService: FormDataService,
-    private serviceFactory: EntityServiceFactory,
-    private toastService: ToastService
+    private toastService: ToastService,
+    @Inject(FORM_ACTION)
+    private executable: (entity: any) => Observable<unknown>
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes[DynamicEntityTypeEnum.entityType]) {
+    if (changes[OnChangesType.ENTITY_TYPE]) {
       this.form = this.fb.group({});
-      this.onFormTypeChange(
-        changes[DynamicEntityTypeEnum.entityType].currentValue
-      );
+      this.onFormTypeChange(changes[OnChangesType.ENTITY_TYPE].currentValue);
     }
   }
 
   onFormTypeChange(type: string) {
     this.formFields = this.formDataService.getFormConfiguration(type);
-
-    console.log('fields', this.formFields);
 
     this.formFields.forEach((field) => {
       const validators = this.formDataService.getValidationsForFieldOnEntity(
@@ -55,22 +61,33 @@ export class DynamicFormComponent implements OnChanges {
   }
 
   onSubmit() {
-    const service = this.serviceFactory.getFormCreationService(this.entityType);
-    const trimmedValues = this.trimFormValues(this.form.value);
+    const trimmedValues = this.trimFormValues(this.form?.value);
 
-    service.createEntity(trimmedValues).subscribe({
+    this.executable(trimmedValues).subscribe({
       next: () => {
         this.toastService.show(
           ToastTypes.SUCCESS,
-          this.entityType + ' ' + Consts.CREATED
+          `${this.entityType} ${Consts.CREATED}`
         );
         this.resetFields();
       },
-      error: (ex) => {
-        ex = ex.error ?? ex;
-        this.toastService.show(ToastTypes.DANGER, ex.message);
+      error: (ex: HttpErrorResponse) => {
+        console.log('entro con error: ', ex);
+
+        this.handleError(ex);
       },
     });
+  }
+
+  private handleError(ex: HttpErrorResponse): void {
+    let msg = 'Unexpected error';
+    if (ex.status === StatusCodes.Unauthorized) {
+      msg = 'Wrong Credentials';
+    } else if (ex.status === StatusCodes.Forbidden) {
+      msg = 'U dont have the role to perform this action.';
+    }
+
+    this.toastService.show(ToastTypes.DANGER, msg);
   }
 
   private trimFormValues(formValue: any): any {

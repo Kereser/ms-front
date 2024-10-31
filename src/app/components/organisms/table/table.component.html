@@ -1,7 +1,7 @@
 <div class="table-header">
   <h2>{{ entityName.toUpperCase() }} table</h2>
   <app-custom-dropdown
-    [optionList]="['1', '5', '10', '15', '20']"
+    [optionList]="['5', '10', '15']"
     (optionSelected)="handleTableSize($event)"
     [tableSize]="pageSize"
   >

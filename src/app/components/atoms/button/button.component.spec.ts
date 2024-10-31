@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ButtonComponent } from './button.component';
 import { By } from '@angular/platform-browser';
-import { Consts } from '../../../utils/Constants';
+import { Consts } from '@app/utils/Constants';
 
 describe('ButtonComponent', () => {
   let component: ButtonComponent;
@@ -9,9 +9,8 @@ describe('ButtonComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ButtonComponent ]
-    })
-    .compileComponents();
+      declarations: [ButtonComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {
@@ -33,7 +32,9 @@ describe('ButtonComponent', () => {
     component.text = Consts.CUSTOM_TXT;
     fixture.detectChanges();
     const buttonElement = fixture.debugElement.query(By.css(Consts.BUTTON));
-    expect(buttonElement.nativeElement.textContent.trim()).toBe(Consts.CUSTOM_TXT);
+    expect(buttonElement.nativeElement.textContent.trim()).toBe(
+      Consts.CUSTOM_TXT
+    );
   });
 
   it('should have correct type attribute', () => {
@@ -46,7 +47,9 @@ describe('ButtonComponent', () => {
   it('should have disabled attribute if disabled is true', () => {
     component.disabled = true;
     fixture.detectChanges();
-    const buttonElement = fixture.debugElement.query(By.css(Consts.BUTTON)).nativeElement;
+    const buttonElement = fixture.debugElement.query(
+      By.css(Consts.BUTTON)
+    ).nativeElement;
     expect(buttonElement.getAttribute('disabled')).toBe('');
   });
 });

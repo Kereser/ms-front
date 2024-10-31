@@ -15,6 +15,11 @@ export const OPTION_LIST_FOR_ADMIN_PANEL: Array<string> = [
   'Category',
 ];
 
+export enum OnChangesType {
+  ENTITY_TYPE = 'entityType',
+  ENTITY_NAME = 'entityName',
+}
+
 export const Consts = {
   ID: 'id',
 
@@ -24,6 +29,13 @@ export const Consts = {
   TYPE_PASSWORD: 'password',
   TYPE_SELECT: 'select',
 
+  TOKEN: 'token',
+  DUMMY_TOKEN: 'AKSJFKL;ASLFJAKLJFKLASFJKLASDFJ0924857.',
+  ADMIN: 'admin',
+
+  ROLE: 'ROLE_',
+
+  USERNAME: 'username',
   NAME: 'name',
   DESCRIPTION: 'description',
   LAST_NAME: 'last name',
@@ -39,6 +51,10 @@ export const Consts = {
   CATEGORY_IDS: 'categoryIds',
   CATEGORY_NAMES: 'Category Names',
 
+  BRAND_DASHBOARD: 'Brand dashboard',
+  CATEGORY_DASHBOARD: 'Category dashboard',
+  ARTICLE_DASHBOARD: 'Article dashboard',
+
   BRAND: 'brand',
   BRAND_ID: 'brandId',
   BRAND_NAME: 'Brand Name',
@@ -46,7 +62,6 @@ export const Consts = {
   ARTICLE: 'article',
 
   AUX_DEPOT: 'aux-depot',
-  AUX_DEPOT_PATH: '/aux-depot',
 
   PRICE: 'price',
   QUANTITY: 'quantity',
@@ -77,15 +92,30 @@ export const Consts = {
   HEADER_SELECTOR: 'app-header',
   FORM_SELECTOR: 'app-form-create',
 
-  CREATE_PATH: 'create',
-  DASHBOARD_PATH: 'dashboard',
-  INVIDIVUAL_DASHBOARD_PATH: 'dashboard/:type',
-  REDIRECT_DASHBOARD_PATH: '/dashboard',
-  DASHBOARD_CATEGORY_PATH: '/dashboard/category',
-  CATEGORIES_PATH: '/categories',
+  LOGIN: 'login',
+
+  SING_UP: 'sign up',
+  SINGUP: 'signup',
+
+  CREATE: 'create',
+  DASHBOARD: 'dashboard',
+
+  AUTH: 'auth',
+
+  // paths
+  AUX_DEPOT_PATH: '/aux-depot',
+  LOGIN_PATH: '/login',
+  CLIENT_PATH: '/client',
+  AUTH_LOGIN_PATH: '/auth/login',
   BY_NAMES_PATH: '/by-names',
   BRAND_PATH: '/brands',
+  CREATE_ARTICLE_PATH: '/create/article',
   ARTICLES_PATH: '/articles',
+  CATEGORIES_PATH: '/categories',
+  REDIRECT_DASHBOARD_PATH: '/dashboard',
+  DASHBOARD_CATEGORY_PATH: '/dashboard/category',
+  DASHBOARD_ARTICLE_PATH: '/dashboard/article',
+  HOME_PATH: '/home',
 
   FALSE: false,
   TRUE: true,
@@ -111,17 +141,23 @@ export const Consts = {
   ONE_HUNDRED_TWENTY: 120,
   THREE_THOUSAND: 3000,
 
-  ERROR_ON_CREATE_ENTITY: 'An error was found while processing createEntity',
+  ERROR_ON_CREATE_ENTITY: 'An error was found while creating entity',
   CATEGORIES_NOT_FOUND: 'Some of the categories were not found.',
   BRANDS_NOT_FOUND: 'Brand were not found.',
   FIELD_VALIDATION_ERRORS: 'Request has field validation errors',
   NOT_FOUND_ENTITY: 'No service found for given entity type',
+  TYPE_NOT_SUPPORTED: 'Type not supported',
+  ERROR_WHILE_LOADING_DATA: 'An error occurred while loading data',
+  WRONG_CREDENTIALS: 'Wrong Credentials',
+  UNEXPECTED_ERROR: 'Unexpected error',
+  UNAUTHORIZED_USER_ERROR: 'U dont have the role to perform this action.',
 
   BIG_DECIMAL_REGEX: /^\d+(?:.\d{1,2})?$/,
   CATEGORIES_REGEX: /^[a-zA-Z]{5,}(?:\s*,\s*[a-zA-Z]{5,})*$/,
   NUMBERS_REGEX: /^\d+$/,
   CHARACTERS_REGEX: /^\w*$/,
   PHONE_NUMBER_REGEX: /^(?:\+?(\d){2})?\d{10}$/,
+  PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?!.*\s).{7,}$/,
 } as const;
 
 export enum Direcitons {
@@ -137,7 +173,9 @@ export interface ValidationConfig {
   brand: ValidationRules;
   category: ValidationRules;
   article: ValidationRules;
-  'aux-depot': ValidationErrors;
+  'aux-depot': ValidationRules;
+  login: ValidationRules;
+  signup: ValidationRules;
 }
 
 const applyTest = (regex: RegExp, val: string) => {
@@ -146,6 +184,12 @@ const applyTest = (regex: RegExp, val: string) => {
   }
 
   return null;
+};
+
+const isValidPassword = (control: AbstractControl): ValidationErrors | null => {
+  const value = control.valid ? control.value : Consts.EMPTY;
+
+  return applyTest(Consts.PASSWORD_REGEX, value);
 };
 
 const validCategories = (control: AbstractControl): ValidationErrors | null => {
@@ -173,7 +217,7 @@ const isOlderValidator = (
 };
 
 export const Validations: ValidationConfig = {
-  brand: {
+  [Consts.BRAND]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
@@ -185,7 +229,7 @@ export const Validations: ValidationConfig = {
       Validators.required,
     ],
   },
-  category: {
+  [Consts.CATEGORY]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
@@ -197,7 +241,7 @@ export const Validations: ValidationConfig = {
       Validators.required,
     ],
   },
-  article: {
+  [Consts.ARTICLE]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
@@ -217,14 +261,41 @@ export const Validations: ValidationConfig = {
       Validators.minLength(Consts.FIVE),
     ],
   },
-  'aux-depot': {
+  [Consts.AUX_DEPOT]: {
     name: [
       Validators.required,
       Validators.minLength(Consts.THREE),
       Validators.maxLength(Consts.FIFTY),
     ],
     email: [Validators.required, Validators.email],
-    password: [Validators.required],
+    password: [isValidPassword],
+    'last name': [
+      Validators.maxLength(Consts.TWENTY),
+      Validators.minLength(Consts.THREE),
+      Validators.required,
+    ],
+    'id number': [
+      Validators.required,
+      Validators.pattern(Consts.NUMBERS_REGEX),
+    ],
+    'phone number': [
+      Validators.required,
+      Validators.pattern(Consts.PHONE_NUMBER_REGEX),
+    ],
+    'birth date': [Validators.required, isOlderValidator],
+  },
+  [Consts.LOGIN]: {
+    username: [Validators.required],
+    password: [isValidPassword],
+  },
+  [Consts.SINGUP]: {
+    name: [
+      Validators.required,
+      Validators.minLength(Consts.THREE),
+      Validators.maxLength(Consts.FIFTY),
+    ],
+    email: [Validators.required, Validators.email],
+    password: [isValidPassword],
     'last name': [
       Validators.maxLength(Consts.TWENTY),
       Validators.minLength(Consts.THREE),
@@ -243,23 +314,23 @@ export const Validations: ValidationConfig = {
 };
 
 export class Constants {
-  static FORM_CONFIGURATIONS = new Map<string, Array<FormField>>([
+  static entityToFormFieldsMap = new Map<string, Array<FormField>>([
     [
-      'brand',
+      Consts.BRAND,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT },
       ],
     ],
     [
-      'category',
+      Consts.CATEGORY,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT },
       ],
     ],
     [
-      'article',
+      Consts.ARTICLE,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.DESCRIPTION, type: Consts.TYPE_TEXT },
@@ -270,7 +341,26 @@ export class Constants {
       ],
     ],
     [
-      'aux-depot',
+      Consts.AUX_DEPOT,
+      [
+        { name: Consts.NAME, type: Consts.TYPE_TEXT },
+        { name: Consts.LAST_NAME, type: Consts.TYPE_TEXT },
+        { name: Consts.ID_NUMBER, type: Consts.TYPE_TEXT },
+        { name: Consts.PHONE_NUMBER, type: Consts.TYPE_TEXT },
+        { name: Consts.BIRTH_DATE, type: Consts.TYPE_DATE },
+        { name: Consts.EMAIL, type: Consts.TYPE_TEXT },
+        { name: Consts.PASSWORD, type: Consts.TYPE_PASSWORD },
+      ],
+    ],
+    [
+      Consts.LOGIN,
+      [
+        { name: Consts.USERNAME, type: Consts.TYPE_TEXT },
+        { name: Consts.PASSWORD, type: Consts.TYPE_PASSWORD },
+      ],
+    ],
+    [
+      Consts.SINGUP,
       [
         { name: Consts.NAME, type: Consts.TYPE_TEXT },
         { name: Consts.LAST_NAME, type: Consts.TYPE_TEXT },
@@ -344,4 +434,11 @@ export enum ToastTypes {
   INFO = 'info',
   SUCCESS = 'success',
   DANGER = 'danger',
+}
+
+export enum StatusCodes {
+  Unauthorized = 401,
+  Forbidden = 403,
+  BadRequest = 404,
+  InternalServerError = 500,
 }
