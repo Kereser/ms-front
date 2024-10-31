@@ -4,11 +4,10 @@
       <h2>Emazon</h2>
     </div>
     <div class="header__search">
-      <input type="text" placeholder="Search...">
+      <ng-content select="[input]"></ng-content>
     </div>
-    <div class="header__sign">
-      <app-button text="Sign Out"></app-button>
+    <div class="header__button">
+      <ng-content select="[button]"></ng-content>
     </div>
   </div>
-  <app-navigation></app-navigation>
 </header>
