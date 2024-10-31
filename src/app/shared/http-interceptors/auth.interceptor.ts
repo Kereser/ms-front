@@ -5,15 +5,15 @@ import {
   HttpEvent,
   HttpInterceptor,
   HttpErrorResponse,
-  HttpStatusCode,
 } from '@angular/common/http';
 import { catchError, Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { Consts } from '@app/utils/Constants';
+import { Consts, StatusCodes } from '@app/utils/Constants';
+import { UserService } from '../services/user/user.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserService) {}
 
   intercept(
     req: HttpRequest<unknown>,
@@ -33,12 +33,19 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe(
       catchError((err: HttpErrorResponse) => {
-        if (err.status === HttpStatusCode.Unauthorized) {
-          this.router.navigate([Consts.AUTH_LOGIN_PATH]);
+        if (err.status === StatusCodes.Unauthorized) {
+          this.handleUnauthorized();
         }
 
         throw err;
       })
     );
+  }
+
+  private handleUnauthorized() {
+    this.router.navigate([Consts.AUTH_LOGIN_PATH]);
+
+    this.userService.setRoleSubToNullAtLogout();
+    localStorage.removeItem(Consts.TOKEN);
   }
 }
