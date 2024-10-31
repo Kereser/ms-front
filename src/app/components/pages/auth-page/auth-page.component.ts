@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ON_SUBMIT_FORM_FN } from '@app/shared/injection-token.provider';
-import {
-  LoginForm,
-  NewUserForm,
-  UserService,
-} from '@app/shared/services/user/user.service';
+import { FORM_ACTION } from '@app/shared/token/injection-token.provider';
+import { UserService } from '@app/shared/services/user/user.service';
 import { Consts } from '@app/utils/Constants';
+import { authPageFactory } from './auth-page.provider';
 
 @Component({
   selector: 'app-auth-page',
@@ -14,14 +11,8 @@ import { Consts } from '@app/utils/Constants';
   styleUrls: ['./auth-page.component.scss'],
   providers: [
     {
-      provide: ON_SUBMIT_FORM_FN,
-      useFactory: (service: UserService, route: ActivatedRoute) => {
-        if (route.snapshot.data[Consts.TYPE] === Consts.LOGIN) {
-          return (entity: LoginForm) => service.login(entity);
-        }
-
-        return (entity: NewUserForm) => service.signup(entity);
-      },
+      provide: FORM_ACTION,
+      useFactory: authPageFactory,
       deps: [UserService, ActivatedRoute],
     },
   ],
@@ -41,7 +32,7 @@ export class AuthPageComponent implements OnInit {
   }
 
   switchView() {
-    this.router.navigate([`/${this.getPathOnAuth()}`]);
+    this.router.navigate([this.getPathOnAuth()]);
   }
 
   getPathOnAuth(): string {
