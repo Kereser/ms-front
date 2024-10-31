@@ -1,12 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { IPageableService } from '../IPageableService';
 import { environment } from '../../../../environments/environment';
 import { Consts } from '../../../utils/Constants';
 import { CategoryModel } from '@app/shared/models/CategoryModel';
 import { PageDTO } from '../../models/PageDTO';
-import { IDynamicFormEntity } from '../IDynamicFormEntity';
 
 export type CategoryFrom = {
   name: string;
@@ -21,7 +19,7 @@ export type CategoryRequest = {
 @Injectable({
   providedIn: 'root',
 })
-export class CategoryService implements IPageableService {
+export class CategoryService {
   private baseURL = environment.STOCK_BASE_URL + Consts.CATEGORIES_PATH;
   private byNameURL = this.baseURL + Consts.BY_NAMES_PATH;
 

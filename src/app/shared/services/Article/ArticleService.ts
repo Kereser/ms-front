@@ -3,14 +3,12 @@ import { Injectable } from '@angular/core';
 import { catchError, Observable, switchMap, throwError } from 'rxjs';
 import { PageDTO } from '../../models/PageDTO';
 import { ArticleModel } from '../../models/ArticleModel';
-import { IPageableService } from '../IPageableService';
 import { environment } from '../../../../environments/environment';
 import { Consts } from '../../../utils/Constants';
 import { CategoryService } from '../Category/CategoryService';
 import { BrandService } from '../Brand/BrandService';
 import { CategoryModel } from '../../models/CategoryModel';
 import { BrandModel } from '../../models/BrandModel';
-import { IDynamicFormEntity } from '../IDynamicFormEntity';
 
 export type ArticleForm = {
   name: string;
@@ -33,7 +31,7 @@ export type ArticleRequest = {
 @Injectable({
   providedIn: 'root',
 })
-export class ArticleService implements IPageableService {
+export class ArticleService {
   private baseURL = environment.STOCK_BASE_URL + Consts.ARTICLES_PATH;
 
   categoryList!: CategoryModel[];

@@ -52,7 +52,7 @@ describe('CategoryService', () => {
       description: Consts.DESCRIPTION,
     };
 
-    service.createEntity(category).subscribe((response: any) => {
+    service.createCategory(category).subscribe((response: any) => {
       expect(response).toBeTruthy();
     });
 

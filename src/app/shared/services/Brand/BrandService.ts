@@ -1,12 +1,10 @@
 import { Injectable } from '@angular/core';
-import { IPageableService } from '../IPageableService';
 import { Observable } from 'rxjs';
 import { BrandModel } from '../../models/BrandModel';
 import { PageDTO } from '../../models/PageDTO';
 import { Consts } from '../../../utils/Constants';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { IDynamicFormEntity } from '../IDynamicFormEntity';
 
 export type BrandForm = {
   name: string;
@@ -21,7 +19,7 @@ export type BrandRequest = {
 @Injectable({
   providedIn: 'root',
 })
-export class BrandService implements IPageableService {
+export class BrandService {
   private baseURL = environment.STOCK_BASE_URL + Consts.BRAND_PATH;
   private byNameURL = this.baseURL + Consts.BY_NAMES_PATH;
 

@@ -44,7 +44,7 @@ describe('BrandService', () => {
       description: Consts.DESCRIPTION,
     };
 
-    service.createEntity(brand).subscribe({
+    service.createBrand(brand).subscribe({
       next: (data) => expect(data).toBeTruthy(),
     });
 
@@ -61,7 +61,7 @@ describe('BrandService', () => {
     };
     const mockError = { message: Consts.FIELD_VALIDATION_ERRORS };
 
-    service.createEntity(brand).subscribe({
+    service.createBrand(brand).subscribe({
       next: () => fail('expected an error, not an entity'),
       error: (error) => {
         expect(error.error.message).toBe(Consts.FIELD_VALIDATION_ERRORS);
