@@ -15,6 +15,11 @@ export const OPTION_LIST_FOR_ADMIN_PANEL: Array<string> = [
   'Category',
 ];
 
+export enum OnChangesType {
+  ENTITY_TYPE = 'entityType',
+  ENTITY_NAME = 'entityName',
+}
+
 export const Consts = {
   ID: 'id',
 
@@ -25,6 +30,10 @@ export const Consts = {
   TYPE_SELECT: 'select',
 
   TOKEN: 'token',
+  DUMMY_TOKEN: 'AKSJFKL;ASLFJAKLJFKLASFJKLASDFJ0924857.',
+  ADMIN: 'admin',
+
+  ROLE: 'ROLE_',
 
   USERNAME: 'username',
   NAME: 'name',
@@ -42,6 +51,10 @@ export const Consts = {
   CATEGORY_IDS: 'categoryIds',
   CATEGORY_NAMES: 'Category Names',
 
+  BRAND_DASHBOARD: 'Brand dashboard',
+  CATEGORY_DASHBOARD: 'Category dashboard',
+  ARTICLE_DASHBOARD: 'Article dashboard',
+
   BRAND: 'brand',
   BRAND_ID: 'brandId',
   BRAND_NAME: 'Brand Name',
@@ -49,7 +62,6 @@ export const Consts = {
   ARTICLE: 'article',
 
   AUX_DEPOT: 'aux-depot',
-  AUX_DEPOT_PATH: '/aux-depot',
 
   PRICE: 'price',
   QUANTITY: 'quantity',
@@ -81,20 +93,29 @@ export const Consts = {
   FORM_SELECTOR: 'app-form-create',
 
   LOGIN: 'login',
-  LOGIN_URL: '/login',
+
   SING_UP: 'sign up',
   SINGUP: 'signup',
-  CLIENT_URL: '/client',
-  CREATE_PATH: 'create',
-  DASHBOARD_PATH: 'dashboard',
-  INVIDIVUAL_DASHBOARD_PATH: 'dashboard/:type',
-  REDIRECT_DASHBOARD_PATH: '/dashboard',
-  DASHBOARD_CATEGORY_PATH: '/dashboard/category',
-  AUTH_LOGIN_PATH: 'auth/login',
-  CATEGORIES_PATH: '/categories',
+
+  CREATE: 'create',
+  DASHBOARD: 'dashboard',
+
+  AUTH: 'auth',
+
+  // paths
+  AUX_DEPOT_PATH: '/aux-depot',
+  LOGIN_PATH: '/login',
+  CLIENT_PATH: '/client',
+  AUTH_LOGIN_PATH: '/auth/login',
   BY_NAMES_PATH: '/by-names',
   BRAND_PATH: '/brands',
+  CREATE_ARTICLE_PATH: '/create/article',
   ARTICLES_PATH: '/articles',
+  CATEGORIES_PATH: '/categories',
+  REDIRECT_DASHBOARD_PATH: '/dashboard',
+  DASHBOARD_CATEGORY_PATH: '/dashboard/category',
+  DASHBOARD_ARTICLE_PATH: '/dashboard/article',
+  HOME_PATH: '/home',
 
   FALSE: false,
   TRUE: true,
@@ -120,11 +141,16 @@ export const Consts = {
   ONE_HUNDRED_TWENTY: 120,
   THREE_THOUSAND: 3000,
 
-  ERROR_ON_CREATE_ENTITY: 'An error was found while processing createEntity',
+  ERROR_ON_CREATE_ENTITY: 'An error was found while creating entity',
   CATEGORIES_NOT_FOUND: 'Some of the categories were not found.',
   BRANDS_NOT_FOUND: 'Brand were not found.',
   FIELD_VALIDATION_ERRORS: 'Request has field validation errors',
   NOT_FOUND_ENTITY: 'No service found for given entity type',
+  TYPE_NOT_SUPPORTED: 'Type not supported',
+  ERROR_WHILE_LOADING_DATA: 'An error occurred while loading data',
+  WRONG_CREDENTIALS: 'Wrong Credentials',
+  UNEXPECTED_ERROR: 'Unexpected error',
+  UNAUTHORIZED_USER_ERROR: 'U dont have the role to perform this action.',
 
   BIG_DECIMAL_REGEX: /^\d+(?:.\d{1,2})?$/,
   CATEGORIES_REGEX: /^[a-zA-Z]{5,}(?:\s*,\s*[a-zA-Z]{5,})*$/,
@@ -408,4 +434,11 @@ export enum ToastTypes {
   INFO = 'info',
   SUCCESS = 'success',
   DANGER = 'danger',
+}
+
+export enum StatusCodes {
+  Unauthorized = 401,
+  Forbidden = 403,
+  BadRequest = 404,
+  InternalServerError = 500,
 }
