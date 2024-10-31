@@ -16,7 +16,7 @@ import {
 import { ToastService } from '@app/shared/services/toast/toast.service';
 import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
 import { Observable } from 'rxjs';
-import { Model } from '@app/shared/services/IPageableService';
+import { PageableType } from '@app/shared/models/PageableType';
 
 @Component({
   selector: 'app-table',
@@ -30,7 +30,7 @@ export class TableComponent implements OnInit, OnChanges {
   @Input() pageSize: number = Consts.FIVE;
   @Input() page: number = Consts.ONE;
 
-  pageDTO!: PageDTO<Model>;
+  pageDTO!: PageDTO<PageableType>;
 
   direction: Direcitons = Direcitons.ASC;
   column: string = Consts.NAME;
@@ -43,7 +43,7 @@ export class TableComponent implements OnInit, OnChanges {
       pageSize: number,
       column: string,
       direction: Direcitons
-    ) => Observable<PageDTO<Model>>
+    ) => Observable<PageDTO<PageableType>>
   ) {}
 
   ngOnInit(): void {
@@ -64,7 +64,7 @@ export class TableComponent implements OnInit, OnChanges {
       this.column,
       this.direction
     ).subscribe({
-      next: (pageData: PageDTO<Model>) => {
+      next: (pageData: PageDTO<PageableType>) => {
         this.pageDTO = pageData;
       },
       error: (ex) => {
@@ -89,7 +89,7 @@ export class TableComponent implements OnInit, OnChanges {
     this.loadData();
   }
 
-  getValue(row: Model, header: string) {
+  getValue(row: PageableType, header: string) {
     const value = (row as any)[header.toLowerCase()];
     if (Array.isArray(value)) {
       return value.map((item) => item.name).join(', ');

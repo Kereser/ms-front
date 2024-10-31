@@ -6,7 +6,9 @@ import { MoleculesModule } from '@app/components/molecules/molecules.module';
 import { TemplatesModule } from '@app/components/templates/templates.module';
 import { AuthPageComponent } from './auth-page/auth-page.component';
 import { OrganismsModule } from '@app/components/organisms/organisms.module';
-import { SharedModule } from '@app/shared/shared/shared.module';
+import { SharedModule } from '@app/shared/shared.module';
+import { AtomsModule } from '../atoms/atoms.module';
+import { ServiceModule } from '@app/shared/services/service.module';
 
 @NgModule({
   declarations: [
@@ -17,9 +19,11 @@ import { SharedModule } from '@app/shared/shared/shared.module';
   imports: [
     CommonModule,
     SharedModule,
+    AtomsModule,
     MoleculesModule,
     OrganismsModule,
     TemplatesModule,
+    ServiceModule,
   ],
   exports: [DashboardPageComponent, CreatePageComponent, AuthPageComponent],
 })

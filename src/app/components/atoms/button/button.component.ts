@@ -1,10 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { Consts } from '../../../utils/Constants';
+import { Consts } from '@app/utils/Constants';
 
 @Component({
   selector: Consts.BUTTON_SELECTOR,
   templateUrl: './button.component.html',
-  styleUrls: ['./button.component.scss']
+  styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
   @Input() type: string = Consts.BUTTON;

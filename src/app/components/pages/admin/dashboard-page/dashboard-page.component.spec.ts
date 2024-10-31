@@ -4,6 +4,7 @@ import { DashboardPageComponent } from './dashboard-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { Consts } from '../../../../utils/Constants';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
@@ -14,6 +15,7 @@ describe('DashboardPageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       declarations: [DashboardPageComponent],
       providers: [
         {
