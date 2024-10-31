@@ -18,11 +18,11 @@ import {
 import { Pageable, PageDTO } from '@app/shared/models/PageDTO';
 import { CategoryModel } from '@app/shared/models/CategoryModel';
 import { BrandModel } from '@app/shared/models/BrandModel';
-import { Model } from '@app/shared/services/IPageableService';
 import { CapitalizePipe } from '@app/shared/pipes/capitalize.pipe';
 import { ToastService } from '@app/shared/services/toast/toast.service';
 import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
 import { HttpErrorResponse } from '@angular/common/http';
+import { PageableType } from '@app/shared/models/PageableType';
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -42,7 +42,7 @@ describe('TableComponent', () => {
         first: page === 0,
         last: page === 9,
         content: [],
-      } as PageDTO<Model>);
+      } as PageDTO<PageableType>);
     });
 
     await TestBed.configureTestingModule({
@@ -176,7 +176,7 @@ describe('TableComponent', () => {
         first: true,
         last: true,
         content: [],
-      } as PageDTO<Model>);
+      } as PageDTO<PageableType>);
     });
     const pageable: Pageable = {
       pageNumber: Consts.ZERO,
@@ -246,7 +246,7 @@ describe('TableComponent', () => {
         first: true,
         last: true,
         content: [],
-      } as PageDTO<Model>);
+      } as PageDTO<PageableType>);
     });
 
     const pageable: Pageable = {
