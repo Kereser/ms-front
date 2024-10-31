@@ -1,10 +1,11 @@
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { IDynamicFormEntity } from '../IDynamicFormEntity';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Consts } from '../../../utils/Constants';
 import { environment } from '../../../../environments/environment';
 import { Router } from '@angular/router';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 
 export type NewUserForm = {
   name: string;
@@ -35,14 +36,26 @@ interface LoginResponse {
   token: string;
 }
 
+interface TokenType extends JwtPayload {
+  authorities: string;
+  userId: string;
+}
+
+export type RoutesType = {
+  [key: string]: string[];
+};
+
 @Injectable({
   providedIn: 'root',
 })
 export class UserService implements IDynamicFormEntity {
+  private roleSubject = new BehaviorSubject<string | null>(null);
+  role$ = this.roleSubject.asObservable();
+
   private baseURL = environment.USER_BASE_URL;
   private AuxDepotURL = this.baseURL + Consts.AUX_DEPOT_PATH;
-  private loginURL = this.baseURL + Consts.LOGIN_URL;
-  private signupURL = this.baseURL + Consts.CLIENT_URL;
+  private loginURL = this.baseURL + Consts.LOGIN_PATH;
+  private signupURL = this.baseURL + Consts.CLIENT_PATH;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -68,12 +81,77 @@ export class UserService implements IDynamicFormEntity {
           next: (res) => {
             const token = res.token;
             if (token) {
-              localStorage.setItem(Consts.TOKEN, token);
-              this.router.navigate([Consts.DASHBOARD_CATEGORY_PATH]);
+              this.handleSuccessfulLogin(token);
             }
           },
         })
       );
+  }
+
+  logout() {
+    localStorage.removeItem(Consts.TOKEN);
+    this.setRoleSubToNullAtLogout();
+
+    this.router.navigate([Consts.AUTH_LOGIN_PATH]);
+  }
+
+  setRoleSubToNullAtLogout() {
+    this.roleSubject.next(null);
+  }
+
+  getRoleValue() {
+    return this.roleSubject.value ?? this.getRoleFromToken();
+  }
+
+  getTokenFromStorage() {
+    return localStorage.getItem(Consts.TOKEN);
+  }
+
+  private getRoleFromToken() {
+    const token = this.getTokenFromStorage();
+
+    if (token) {
+      this.processToken(token);
+      return this.roleSubject.value;
+    }
+
+    return null;
+  }
+
+  private handleSuccessfulLogin(token: string) {
+    localStorage.setItem(Consts.TOKEN, token);
+    this.handleRedirectionAccordingToRole(token);
+  }
+
+  handleRedirectionAccordingToRole(token: string) {
+    this.processToken(token);
+
+    const role = this.getRoleValue();
+    if (role && role in this.routes) {
+      this.router.navigate(this.routes[role]);
+      return;
+    }
+
+    this.router.navigate([Consts.AUTH_LOGIN_PATH]);
+  }
+
+  routes: RoutesType = {
+    [Consts.AUX_DEPOT]: [Consts.DASHBOARD_ARTICLE_PATH],
+    admin: [Consts.CREATE_ARTICLE_PATH],
+    client: [Consts.DASHBOARD_ARTICLE_PATH],
+  };
+
+  private processToken(token: string) {
+    const { authorities } = jwtDecode<TokenType>(token);
+    this.setRole(authorities);
+  }
+
+  private setRole(authorities: string) {
+    const role = authorities
+      .split(Consts.ROLE)
+      [Consts.ONE].replace('_', '-')
+      .toLowerCase();
+    this.roleSubject.next(role);
   }
 
   private buildEncodedCredentials(entity: LoginForm): string {
