@@ -3,10 +3,10 @@ import { Subject } from 'rxjs';
 import { ToastTypes } from '../../../utils/Constants';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ToastService {
-  private toastSubject = new Subject<{ type: ToastTypes, msg: string }>();
+  private toastSubject = new Subject<{ type: ToastTypes; msg: string }>();
   toastState$ = this.toastSubject.asObservable();
 
   show(type: ToastTypes, msg: string) {

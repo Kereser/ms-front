@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { IDynamicFormEntity } from '../IDynamicFormEntity';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Consts } from '../../../utils/Constants';
 import { environment } from '../../../../environments/environment';
@@ -48,7 +47,7 @@ export type RoutesType = {
 @Injectable({
   providedIn: 'root',
 })
-export class UserService implements IDynamicFormEntity {
+export class UserService {
   private roleSubject = new BehaviorSubject<string | null>(null);
   role$ = this.roleSubject.asObservable();
 
