@@ -4,6 +4,8 @@ import { CreatePageComponent } from './create-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { Consts } from '../../../../utils/Constants';
 import { of } from 'rxjs';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { By } from '@angular/platform-browser';
 
 describe('CreatePageComponent', () => {
   let component: CreatePageComponent;
@@ -14,6 +16,7 @@ describe('CreatePageComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       declarations: [CreatePageComponent],
       providers: [
         {
@@ -24,11 +27,24 @@ describe('CreatePageComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(CreatePageComponent);
+
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should call logout on button click', () => {
+    jest.spyOn(component, 'logout');
+
+    const buttonDebugElement = fixture.debugElement.query(
+      By.css('app-button[button]')
+    );
+
+    buttonDebugElement.triggerEventHandler('click', null);
+
+    expect(component.logout).toHaveBeenCalled();
   });
 });
