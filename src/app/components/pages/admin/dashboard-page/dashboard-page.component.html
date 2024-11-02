@@ -2,9 +2,5 @@
   <app-header-with-options header>
     <app-button text="Logout" (click)="logout()" button></app-button>
   </app-header-with-options>
-  <app-table
-    [headers]="entityHeaders"
-    [entityName]="entityType"
-    [clickableHeaders]="clickableHeaders"
-  ></app-table>
+  <app-table [entityName]="entityType"></app-table>
 </app-main-layout>

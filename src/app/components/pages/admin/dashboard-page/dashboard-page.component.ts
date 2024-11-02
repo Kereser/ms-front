@@ -34,8 +34,6 @@ const clickeableHeadersByType: any = {
   ],
 })
 export class DashboardPageComponent implements OnInit, OnDestroy {
-  entityHeaders!: string[];
-  clickableHeaders!: string[];
   entityType: string = Consts.EMPTY;
   private routeSub: Subscription = new Subscription();
 
@@ -47,8 +45,6 @@ export class DashboardPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.data.subscribe((data) => {
       this.entityType = data[Consts.TYPE] ?? Consts.EMPTY;
-      this.entityHeaders = headersByType[this.entityType];
-      this.clickableHeaders = clickeableHeadersByType[this.entityType];
     });
   }
 
