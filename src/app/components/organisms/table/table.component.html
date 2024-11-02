@@ -89,9 +89,6 @@
 <app-modal #modal>
   <h2 title>Add supply to: {{ selectedConent?.name }}</h2>
   <p title>Current quantity: {{ selectedConent?.quantity }}</p>
-  <app-dynamic-form
-    content
-    [entityType]="isVisibleModal() ? 'supplyArticle' : ''"
-  ></app-dynamic-form>
+  <app-dynamic-form content entityType="supplyArticle"></app-dynamic-form>
   <app-button button (click)="modal.closeModal()" text="Close"></app-button>
 </app-modal>
