@@ -1,8 +1,4 @@
-import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
-
-enum OnChangesValues {
-  IS_VISIBLE = 'isVisible',
-}
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-modal',

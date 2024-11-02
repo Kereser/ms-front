@@ -1,5 +1,4 @@
 import { ArticleService } from '@app/shared/services/Article/ArticleService';
-import { UserService } from '@app/shared/services/user/user.service';
 import { TableComponent } from './table.component';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
@@ -8,7 +7,6 @@ import { of } from 'rxjs';
 import { ArticleModel } from '@app/shared/models/ArticleModel';
 import { Consts } from '@app/utils/Constants';
 import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
-import { table } from 'console';
 
 describe('dashboardPageFactory', () => {
   let articleService: ArticleService;

@@ -63,7 +63,13 @@ export class UserService {
   }
 
   signup(entity: NewUserForm): Observable<unknown> {
-    return this.http.post(this.signupURL, this.formatNewUser(entity));
+    return this.http.post(this.signupURL, this.formatNewUser(entity)).pipe(
+      tap({
+        next: (_) => {
+          this.handleSuccessSignup();
+        },
+      })
+    );
   }
 
   login(entity: LoginForm): Observable<unknown> {
@@ -106,6 +112,10 @@ export class UserService {
     return localStorage.getItem(Consts.TOKEN);
   }
 
+  private handleSuccessSignup() {
+    this.navigateToLogin();
+  }
+
   private getRoleFromToken() {
     const token = this.getTokenFromStorage();
 
@@ -131,6 +141,10 @@ export class UserService {
       return;
     }
 
+    this.navigateToLogin();
+  }
+
+  private navigateToLogin() {
     this.router.navigate([Consts.AUTH_LOGIN_PATH]);
   }
 
