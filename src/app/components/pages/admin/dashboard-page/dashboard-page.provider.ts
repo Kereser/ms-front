@@ -22,7 +22,6 @@ export const dashboardPageFactory = (
   brandService: BrandService,
   articleService: ArticleService
 ) => {
-  const currentRoute = route.snapshot.data[Consts.TYPE];
   const routes: RoleRoutes = {
     [Consts.CATEGORY]: (
       page: number,
@@ -43,6 +42,8 @@ export const dashboardPageFactory = (
       direction: Direcitons
     ) => articleService.getEntityPage(page, pageSize, column, direction),
   };
+
+  const currentRoute = route.snapshot.data[Consts.TYPE];
 
   if (currentRoute && currentRoute in routes) {
     return routes[currentRoute];

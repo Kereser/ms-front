@@ -1,11 +1,13 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 .dynamic-table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
+  table-layout: fixed;
 
-  th, td {
+  th,
+  td {
     border: 1px solid $border;
     padding: 10px 12px;
     text-align: left;
@@ -35,6 +37,17 @@
     background-color: $purple;
     color: $white;
   }
+
+  &__tbody {
+    &__opt-button {
+      position: absolute;
+      color: $black;
+
+      ::ng-deep button {
+        font-size: 20px;
+      }
+    }
+  }
 }
 
 .pagination {
@@ -51,14 +64,14 @@
     cursor: pointer;
     font-size: $ty-body-s;
   }
-  
+
   &__txt.active {
     transform: translateY(-8px);
     transition: transform 0.3s ease;
     color: $purple;
     font-weight: 700;
   }
-  
+
   &__txt:disabled {
     background-color: #ccc;
     cursor: not-allowed;
@@ -86,6 +99,14 @@
   justify-content: space-between;
   padding: 10px 5px;
   align-items: center;
+
+  &__size-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__span {
+    padding: 0 10px 0 0;
+  }
 }
-
-

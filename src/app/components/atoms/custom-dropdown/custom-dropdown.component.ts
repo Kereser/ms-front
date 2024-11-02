@@ -18,6 +18,7 @@ export class CustomDropdownComponent implements OnInit, OnChanges {
   @Input() optionList!: Array<string>;
   @Input() selectedOption!: string;
   @Input() tableSize!: number;
+  @Input() isWideDropdown: boolean | null = null;
   dropdownOpen = false;
 
   @Output() optionSelected = new EventEmitter<string>();

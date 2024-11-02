@@ -1,42 +1,56 @@
 <div class="table-header">
   <h2>{{ entityName.toUpperCase() }} table</h2>
-  <app-custom-dropdown
-    [optionList]="['5', '10', '15']"
-    (optionSelected)="handleTableSize($event)"
-    [tableSize]="pageSize"
-  >
-  </app-custom-dropdown>
+
+  <div class="table-header__size-selector">
+    <span class="table-header__span">table size: </span>
+    <app-custom-dropdown
+      [optionList]="['5', '10', '15']"
+      (optionSelected)="handleTableSize($event)"
+      [tableSize]="pageSize"
+    >
+    </app-custom-dropdown>
+  </div>
 </div>
 
 <table class="dynamic-table">
-  <caption>
-    {{
-      entityName | capitalize
-    }}
-    table
-  </caption>
-  <thead>
-    <tr>
+  <caption></caption>
+  <thead class="dynamic-table__thead">
+    <tr class="dynamic-table__thead__tr">
       <th
         *ngFor="let header of headers"
-        [class.clickable]="clickableHeaders.includes(header.toLowerCase())"
+        [class.clickable]="clickable.includes(header.toLowerCase())"
         (click)="
-          clickableHeaders.includes(header.toLowerCase()) &&
+          clickable.includes(header.toLowerCase()) &&
             onSort(header.toLowerCase())
         "
       >
         {{ header | capitalize }}
-        <app-naked-button
-          *ngIf="clickableHeaders.includes(header.toLowerCase())"
-        >
+        <app-naked-button *ngIf="clickable.includes(header.toLowerCase())">
           {{ direction === "asc" ? "▲" : "▼" }}
         </app-naked-button>
       </th>
     </tr>
   </thead>
-  <tbody>
-    <tr *ngFor="let row of pageDTO?.content">
+  <tbody class="dynamic-table__tbody">
+    <tr
+      *ngFor="let row of pageDTO?.content; let i = index"
+      class="dynamic-table__tbody__tr"
+      (mouseover)="mouseOverFn(i)"
+      (mouseleave)="mouseLeave()"
+    >
       <td *ngFor="let header of headers">{{ getValue(row, header) }}</td>
+      <app-naked-button
+        *ngIf="
+          idxHovered === i &&
+          isHovering &&
+          entityName === 'article' &&
+          userService.getRoleValue() === 'aux-depot'
+        "
+        class="dynamic-table__tbody__opt-button"
+        (click)="onSettingsClick()"
+      >
+        🛠️
+      </app-naked-button>
     </tr>
   </tbody>
 </table>
@@ -71,3 +85,13 @@
     →
   </app-naked-button>
 </div>
+
+<app-modal #modal>
+  <h2 title>Add supply to: {{ selectedConent?.name }}</h2>
+  <p title>Current quantity: {{ selectedConent?.quantity }}</p>
+  <app-dynamic-form
+    content
+    [entityType]="isVisibleModal() ? 'supplyArticle' : ''"
+  ></app-dynamic-form>
+  <app-button button (click)="modal.closeModal()" text="Close"></app-button>
+</app-modal>

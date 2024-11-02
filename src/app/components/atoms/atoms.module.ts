@@ -7,6 +7,7 @@ import { NakedButtonComponent } from './naked-button/naked-button.component';
 import { FormTextInputComponent } from './text-input/form-text-input.component';
 import { ToastComponent } from './toast/toast.component';
 import { CustomDropdownComponent } from './custom-dropdown/custom-dropdown.component';
+import { ModalComponent } from './modal/modal.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { CustomDropdownComponent } from './custom-dropdown/custom-dropdown.compo
     FormTextInputComponent,
     ToastComponent,
     CustomDropdownComponent,
+    ModalComponent,
   ],
   imports: [CommonModule, ReactiveFormsModule, SharedModule],
   exports: [
@@ -23,6 +25,7 @@ import { CustomDropdownComponent } from './custom-dropdown/custom-dropdown.compo
     FormTextInputComponent,
     ToastComponent,
     CustomDropdownComponent,
+    ModalComponent,
   ],
 })
 export class AtomsModule {}

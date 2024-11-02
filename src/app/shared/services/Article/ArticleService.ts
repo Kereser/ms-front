@@ -28,11 +28,18 @@ export type ArticleRequest = {
   brandId: number;
 };
 
+export interface SupplyForm {
+  id?: number;
+  quantity: number;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class ArticleService {
   private baseURL = environment.STOCK_BASE_URL + Consts.ARTICLES_PATH;
+  private supplyURL =
+    environment.STOCK_BASE_URL + Consts.ARTICLES_PATH + Consts.SUPPLY_PATH;
 
   categoryList!: CategoryModel[];
   brandList!: BrandModel[];
@@ -72,6 +79,13 @@ export class ArticleService {
 
     return this.http.get<PageDTO<ArticleModel>>(this.baseURL, {
       params: { page, pageSize, column, direction },
+    });
+  }
+
+  addSupply(entity: SupplyForm, id: number): Observable<unknown> {
+    const { quantity } = entity;
+    return this.http.post<SupplyForm>(this.supplyURL, {
+      items: [{ quantity, articleId: id }],
     });
   }
 

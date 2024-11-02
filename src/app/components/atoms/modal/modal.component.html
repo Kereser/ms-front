@@ -1,0 +1,11 @@
+<div class="modal" *ngIf="isVisible">
+  <div class="modal__container">
+    <app-naked-button class="modal__close-button" (click)="closeModal()"
+      >✖️</app-naked-button
+    >
+    <ng-content select="[title]" class="modal__title"></ng-content>
+    <div class="modal__content">
+      <ng-content select="[content]"></ng-content>
+    </div>
+  </div>
+</div>

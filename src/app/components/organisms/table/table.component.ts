@@ -1,42 +1,69 @@
 import {
   Component,
+  forwardRef,
   Inject,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { PageDTO } from '@app/shared/models/PageDTO';
 import {
   Consts,
   Direcitons,
   OnChangesType,
+  TABLE_INFO_BY_ENTITY,
   ToastTypes,
 } from '@app/utils/Constants';
 import { ToastService } from '@app/shared/services/toast/toast.service';
-import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
+import {
+  FORM_ACTION,
+  TABLE_ACTTION,
+} from '@app/shared/token/injection-token.provider';
 import { Observable } from 'rxjs';
 import { PageableType } from '@app/shared/models/PageableType';
+import { ArticleModel } from '@app/shared/models/ArticleModel';
+import { UserService } from '@app/shared/services/user/user.service';
+import { tableFactory } from './table.provider';
+import { ArticleService } from '@app/shared/services/Article/ArticleService';
+import { ModalComponent } from '@app/components/atoms/modal/modal.component';
 
 @Component({
   selector: 'app-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
+  providers: [
+    {
+      provide: FORM_ACTION,
+      useFactory: tableFactory,
+      deps: [ArticleService, forwardRef(() => TableComponent)],
+    },
+  ],
 })
 export class TableComponent implements OnInit, OnChanges {
-  @Input() headers: string[] = [];
-  @Input() clickableHeaders: string[] = [Consts.NAME];
   @Input() entityName!: string;
   @Input() pageSize: number = Consts.FIVE;
   @Input() page: number = Consts.ONE;
+
+  headers: string[] = [];
+  clickable: string[] = [];
 
   pageDTO!: PageDTO<PageableType>;
 
   direction: Direcitons = Direcitons.ASC;
   column: string = Consts.NAME;
 
+  isHovering: boolean = false;
+  idxHovered: number | null = null;
+
+  selectedConent: ArticleModel | null = null;
+
+  @ViewChild('modal') modal!: ModalComponent;
+
   constructor(
     private toastService: ToastService,
+    public userService: UserService,
     @Inject(TABLE_ACTTION)
     private executable: (
       page: number,
@@ -48,6 +75,8 @@ export class TableComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.reloadDashboard();
+    this.headers = TABLE_INFO_BY_ENTITY[this.entityName].headers;
+    this.clickable = TABLE_INFO_BY_ENTITY[this.entityName].clickable;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -67,8 +96,7 @@ export class TableComponent implements OnInit, OnChanges {
       next: (pageData: PageDTO<PageableType>) => {
         this.pageDTO = pageData;
       },
-      error: (ex) => {
-        console.log('entro al error: ', ex);
+      error: (_) => {
         this.toastService.show(
           ToastTypes.DANGER,
           Consts.ERROR_WHILE_LOADING_DATA
@@ -121,6 +149,31 @@ export class TableComponent implements OnInit, OnChanges {
     return (page as number) + 1;
   }
 
+  mouseOverFn(idx: number) {
+    this.isHovering = true;
+    this.idxHovered = idx;
+  }
+
+  mouseLeave() {
+    this.isHovering = false;
+    this.idxHovered = null;
+  }
+
+  onSettingsClick() {
+    this.selectedConent = this.pageDTO.content[
+      this.idxHovered!
+    ] as ArticleModel;
+    this.modal.openModal();
+  }
+
+  closeModal() {
+    this.modal.closeModal();
+  }
+
+  isVisibleModal() {
+    return this.modal?.getVisible();
+  }
+
   private setColumn(field: string) {
     if (field.toLowerCase() === Consts.CATEGORIES.toLowerCase()) {
       this.column = Consts.SORT_CATEGORY_NAMES;
@@ -170,7 +223,7 @@ export class TableComponent implements OnInit, OnChanges {
     }
   }
 
-  private reloadDashboard() {
+  reloadDashboard() {
     this.reloadFilters();
     this.loadData();
   }

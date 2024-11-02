@@ -6,7 +6,7 @@ import {
   FormField,
   ValidationConfig,
   Validations,
-} from '../../../utils/Constants';
+} from '@app/utils/Constants';
 
 @Injectable({
   providedIn: 'root',
