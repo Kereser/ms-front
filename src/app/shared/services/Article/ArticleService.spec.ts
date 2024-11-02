@@ -3,7 +3,12 @@ import {
   HttpClientTestingModule,
   HttpTestingController,
 } from '@angular/common/http/testing';
-import { ArticleForm, ArticleRequest, ArticleService } from './ArticleService';
+import {
+  ArticleForm,
+  ArticleRequest,
+  ArticleService,
+  SupplyForm,
+} from './ArticleService';
 import { PageDTO, Pageable } from '../../models/PageDTO';
 import { ArticleModel } from '../../models/ArticleModel';
 import { environment } from '../../../../environments/environment';
@@ -211,7 +216,7 @@ describe('ArticleService', () => {
       },
     });
 
-    httpMock.expectNone(`${environment.STOCK_BASE_URL + Consts.ARTICLES_PATH}`);
+    httpMock.expectNone(service['baseURL']);
   });
 
   it('should create article', () => {
@@ -252,6 +257,19 @@ describe('ArticleService', () => {
     const req = httpMock.expectOne(service['baseURL']);
     expect(req.request.method).toBe(TypeMethods.POST);
     expect(req.request.body).toEqual(formattedEntity);
+    req.flush({});
+  });
+
+  it('should add supply', () => {
+    const entity: SupplyForm = { quantity: 2 };
+
+    service.addSupply(entity, 1).subscribe();
+
+    const req = httpMock.expectOne(service['supplyURL']);
+    expect(req.request.body).toEqual({
+      items: [{ articleId: 1, quantity: 2 }],
+    });
+    expect(req.request.method).toBe(TypeMethods.POST);
     req.flush({});
   });
 });
