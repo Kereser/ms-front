@@ -101,6 +101,7 @@ export const Consts = {
   DASHBOARD: 'dashboard',
 
   AUTH: 'auth',
+  SUPPLY_ARTICLE: 'supplyArticle',
 
   // paths
   AUX_DEPOT_PATH: '/aux-depot',
@@ -111,6 +112,7 @@ export const Consts = {
   BRAND_PATH: '/brands',
   CREATE_ARTICLE_PATH: '/create/article',
   ARTICLES_PATH: '/articles',
+  SUPPLY_PATH: '/supply',
   CATEGORIES_PATH: '/categories',
   REDIRECT_DASHBOARD_PATH: '/dashboard',
   DASHBOARD_CATEGORY_PATH: '/dashboard/category',
@@ -155,6 +157,7 @@ export const Consts = {
   BIG_DECIMAL_REGEX: /^\d+(?:.\d{1,2})?$/,
   CATEGORIES_REGEX: /^[a-zA-Z]{5,}(?:\s*,\s*[a-zA-Z]{5,})*$/,
   NUMBERS_REGEX: /^\d+$/,
+  POSITIVE_NUMBERS_REGEX: /^[1-9]+$/,
   CHARACTERS_REGEX: /^\w*$/,
   PHONE_NUMBER_REGEX: /^(?:\+?(\d){2})?\d{10}$/,
   PASSWORD_REGEX: /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)(?!.*\s).{7,}$/,
@@ -176,6 +179,7 @@ export interface ValidationConfig {
   'aux-depot': ValidationRules;
   login: ValidationRules;
   signup: ValidationRules;
+  supplyArticle: ValidationRules;
 }
 
 const applyTest = (regex: RegExp, val: string) => {
@@ -311,6 +315,12 @@ export const Validations: ValidationConfig = {
     ],
     'birth date': [Validators.required, isOlderValidator],
   },
+  [Consts.SUPPLY_ARTICLE]: {
+    quantity: [
+      Validators.required,
+      Validators.pattern(Consts.POSITIVE_NUMBERS_REGEX),
+    ],
+  },
 };
 
 export class Constants {
@@ -371,8 +381,38 @@ export class Constants {
         { name: Consts.PASSWORD, type: Consts.TYPE_PASSWORD },
       ],
     ],
+    ['supplyArticle', [{ name: Consts.QUANTITY, type: Consts.TYPE_TEXT }]],
   ]);
 }
+
+type tableInfoType = {
+  [key: string]: {
+    headers: string[];
+    clickable: string[];
+  };
+};
+
+export const TABLE_INFO_BY_ENTITY: tableInfoType = {
+  article: {
+    headers: [
+      'name',
+      'description',
+      'price',
+      'quantity',
+      'categories',
+      'brand',
+    ],
+    clickable: ['name', 'categories', 'description'],
+  },
+  brand: {
+    headers: ['name', 'description'],
+    clickable: ['name'],
+  },
+  category: {
+    headers: ['name', 'description'],
+    clickable: ['name', 'categories', 'description'],
+  },
+};
 
 export interface EntityFields {
   name: string;
