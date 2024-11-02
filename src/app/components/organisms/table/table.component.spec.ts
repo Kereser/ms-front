@@ -23,6 +23,8 @@ import { ToastService } from '@app/shared/services/toast/toast.service';
 import { TABLE_ACTTION } from '@app/shared/token/injection-token.provider';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PageableType } from '@app/shared/models/PageableType';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ModalComponent } from '@app/components/atoms/modal/modal.component';
 
 describe('TableComponent', () => {
   let component: TableComponent;
@@ -46,7 +48,8 @@ describe('TableComponent', () => {
     });
 
     await TestBed.configureTestingModule({
-      declarations: [TableComponent, CapitalizePipe],
+      imports: [HttpClientTestingModule],
+      declarations: [TableComponent, CapitalizePipe, ModalComponent],
       providers: [
         {
           provide: TABLE_ACTTION,
@@ -56,15 +59,19 @@ describe('TableComponent', () => {
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TableComponent);
-    component = fixture.componentInstance;
     toastService = TestBed.inject(ToastService);
 
-    component.entityName = Consts.TEST_ENTITY;
-    component.headers = [Consts.NAME];
-    fixture.detectChanges();
-
     executable.mockClear();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(TableComponent);
+    component = fixture.componentInstance;
+
+    component.modal = TestBed.createComponent(ModalComponent).componentInstance;
+
+    component.entityName = Consts.CATEGORY;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
@@ -205,7 +212,7 @@ describe('TableComponent', () => {
       first: true,
       last: true,
       content: [],
-    } as PageDTO<ArticleModel | CategoryModel | BrandModel>;
+    } as PageDTO<PageableType>;
 
     const result = component.getMiddleRange();
     expect(result).toEqual([Consts.ZERO, '...', 6, 7, 8, 9]);
@@ -269,5 +276,43 @@ describe('TableComponent', () => {
 
     const result = component.getMiddleRange();
     expect(result).toEqual([0, 1, 2, 3, 4]);
+  });
+
+  it('should get data from modal', () => {
+    component.modal.isVisible = false;
+
+    const res = component.isVisibleModal();
+
+    expect(res).toBeFalsy();
+  });
+
+  it('should update isVisible on modal when closeModal()', () => {
+    jest.spyOn(component.modal, 'closeModal');
+    component.modal.isVisible = true;
+
+    component.closeModal();
+
+    expect(component.modal.closeModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('should open modal and set selectedContent', () => {
+    jest.spyOn(component.modal, 'openModal');
+
+    component.onSettingsClick();
+
+    expect(component.selectedConent).not.toBeNull();
+    expect(component.modal.openModal).toHaveBeenCalledTimes(1);
+  });
+
+  it('should set idx and isHovering when trigger mouseover and mouseleave', () => {
+    component.mouseOverFn(1);
+
+    expect(component.isHovering).toBeTruthy();
+    expect(component.idxHovered).toBe(1);
+
+    component.mouseLeave();
+
+    expect(component.isHovering).toBeFalsy();
+    expect(component.idxHovered).toBeNull();
   });
 });
