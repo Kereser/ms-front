@@ -5,13 +5,13 @@
 >
   <app-naked-button>{{ dropdownOpen ? "▲" : "▼" }}</app-naked-button>
   <span class="dropdown__span" [ngClass]="{ selected: selectedOption }">
-    {{ selectedOption || "Choose an option" }}
+    {{ selectedOption || "--" }}
   </span>
   <div *ngIf="dropdownOpen" class="dropdown__options">
     <div
       class="dropdown__option"
       *ngFor="let option of optionList"
-      (click)="selectOption(option, $event)"
+      (click)="selectOption(option)"
     >
       {{ option }}
     </div>
