@@ -58,7 +58,7 @@ describe('HeaderComponent', () => {
 
   it('should render the sign out button', () => {
     const buttonContainer = fixture.debugElement.query(
-      By.css('.header__button')
+      By.css('.header__options')
     ).nativeElement;
     expect(buttonContainer).toBeTruthy();
   });

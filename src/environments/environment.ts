@@ -6,7 +6,8 @@ export const environment = {
   production: false,
   STOCK_BASE_URL: 'http://localhost:8080/stock',
   USER_BASE_URL: 'http://localhost:8081/users',
-};
+  CART_BASE_URL: 'http://localhost:8082/cart',
+} as const;
 
 /*
  * For easier debugging in development mode, you can import the following file

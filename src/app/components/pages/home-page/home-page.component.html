@@ -1,0 +1,66 @@
+<app-home-layout>
+  <app-header header>
+    <app-naked-button button class="icon-container">
+      <img src="assets/shopping-cart-svgrepo-com.svg" alt="cart-svg" />
+    </app-naked-button>
+    <app-naked-button button class="icon-container">
+      <img
+        src="assets/user-profile-account-person-svgrepo-com.svg"
+        alt="user-profile-svg"
+      />
+    </app-naked-button>
+    <app-button (click)="onLogout()" text="logout" button></app-button>
+  </app-header>
+
+  <div content class="home-container">
+    <div class="home-container__header">
+      <h2 class="home-container__header__title">Articles</h2>
+    </div>
+    <div class="home-container__body">
+      <div
+        class="home-container__body__cart"
+        *ngFor="let article of articles?.content"
+      >
+        <h2 class="home-container__body__title">
+          {{ article.name }}
+        </h2>
+        <h3 class="home-container__body__first-info">
+          {{ article.brand.name }}
+        </h3>
+        <p class="home-container__body__description">
+          {{ article.description }}
+        </p>
+        <div class="home-container__body__footer-info">
+          <div>
+            <h4>Categories:</h4>
+            <span>
+              {{ getCategoriesForArticle(article.name) }}
+            </span>
+          </div>
+          <div class="home-container__body__footer-info__flex-container">
+            <h4>Quantity:</h4>
+            <app-custom-dropdown
+              [optionList]="getQuantiyForArticle(article)"
+              (optionSelected)="handleSelectQuantityForArticle($event, article)"
+            >
+            </app-custom-dropdown>
+            <span>(total: {{ article.quantity }})</span>
+          </div>
+        </div>
+        <div class="home-container__body__options">
+          <app-button
+            text="Add to cart"
+            [disabled]="article.quantity < 1"
+            (click)="handleAddToCart(article)"
+          ></app-button>
+          <p *ngIf="article.quantity < 1">Stock will be available soon.</p>
+        </div>
+      </div>
+    </div>
+    <app-pagination
+      (currentPage)="updateCurrentPage($event)"
+      [pageDTO]="articles"
+    >
+    </app-pagination>
+  </div>
+</app-home-layout>

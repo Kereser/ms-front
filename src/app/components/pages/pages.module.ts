@@ -8,12 +8,14 @@ import { AuthPageComponent } from './auth-page/auth-page.component';
 import { OrganismsModule } from '@app/components/organisms/organisms.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { AtomsModule } from '../atoms/atoms.module';
+import { HomePageComponent } from './home-page/home-page.component';
 
 @NgModule({
   declarations: [
     DashboardPageComponent,
     CreatePageComponent,
     AuthPageComponent,
+    HomePageComponent,
   ],
   imports: [
     CommonModule,
@@ -23,6 +25,11 @@ import { AtomsModule } from '../atoms/atoms.module';
     OrganismsModule,
     TemplatesModule,
   ],
-  exports: [DashboardPageComponent, CreatePageComponent, AuthPageComponent],
+  exports: [
+    DashboardPageComponent,
+    CreatePageComponent,
+    AuthPageComponent,
+    HomePageComponent,
+  ],
 })
 export class PagesModule {}

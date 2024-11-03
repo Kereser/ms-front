@@ -24,4 +24,10 @@
     outline: none;
     border: 1px solid #9d3fe7;
   }
+
+  &__options {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
 }

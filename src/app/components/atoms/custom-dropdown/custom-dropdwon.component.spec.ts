@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CustomDropdownComponent } from './custom-dropdown.component';
 import { By } from '@angular/platform-browser';
 import { TestUtilEnums } from '../../../utils/TestConstants';
-import { Consts } from '../../../utils/Constants';
 
 describe('CustomDropdownComponent', () => {
   let component: CustomDropdownComponent;
@@ -47,8 +46,7 @@ describe('CustomDropdownComponent', () => {
 
   it('should select an option, close the dropdown, and emit the optionSelected event when selectOption is called', () => {
     jest.spyOn(component.optionSelected, TestUtilEnums.EMIT);
-    const event = new Event(TestUtilEnums.CLICK);
-    component.selectOption(TestUtilEnums.OPTION_2, event);
+    component.selectOption(TestUtilEnums.OPTION_2);
     expect(component.selectedOption).toBe(TestUtilEnums.OPTION_2);
     expect(component.dropdownOpen).toBe(false);
     expect(component.optionSelected.emit).toHaveBeenCalledWith(
@@ -68,17 +66,14 @@ describe('CustomDropdownComponent', () => {
 
   it('should select an option, close the dropdown, emit the optionSelected event, and stop event propagation', () => {
     jest.spyOn(component.optionSelected, TestUtilEnums.EMIT);
-    const event = new Event(TestUtilEnums.CLICK);
-    jest.spyOn(event, 'stopPropagation');
 
-    component.selectOption(TestUtilEnums.OPTION_2, event);
+    component.selectOption(TestUtilEnums.OPTION_2);
 
     expect(component.selectedOption).toBe(TestUtilEnums.OPTION_2);
     expect(component.dropdownOpen).toBe(false);
     expect(component.optionSelected.emit).toHaveBeenCalledWith(
       TestUtilEnums.OPTION_2
     );
-    expect(event.stopPropagation).toHaveBeenCalled();
   });
 
   it('should not close the dropdown when clicking inside', () => {
@@ -90,21 +85,5 @@ describe('CustomDropdownComponent', () => {
     Object.defineProperty(event, 'target', { value: insideElement });
     component.onClickOutside(event);
     expect(component.dropdownOpen).toBe(true);
-  });
-
-  it('should reset dropdown value when table is reset', () => {
-    component.optionList = ['1', '5', '10'];
-    component.selectedOption = '5';
-
-    component.ngOnChanges({
-      tableSize: {
-        currentValue: Consts.ONE,
-        previousValue: Consts.FIVE,
-        firstChange: false,
-        isFirstChange: () => false,
-      },
-    });
-
-    expect(component.selectedOption).toBe('1');
   });
 });

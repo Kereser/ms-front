@@ -104,6 +104,7 @@ export const Consts = {
   SUPPLY_ARTICLE: 'supplyArticle',
 
   // paths
+  CART_PATH: '/cart',
   AUX_DEPOT_PATH: '/aux-depot',
   LOGIN_PATH: '/login',
   CLIENT_PATH: '/client',
@@ -153,9 +154,10 @@ export const Consts = {
   WRONG_CREDENTIALS: 'Wrong Credentials',
   UNEXPECTED_ERROR: 'Unexpected error',
   UNAUTHORIZED_USER_ERROR: 'U dont have the role to perform this action.',
+  EX_MSG: 'Ex msg',
 
   BIG_DECIMAL_REGEX: /^\d+(?:.\d{1,2})?$/,
-  CATEGORIES_REGEX: /^[a-zA-Z]{5,}(?:\s*,\s*[a-zA-Z]{5,})*$/,
+  CATEGORIES_REGEX: /^[a-zA-Z]{3,}(?:\s*,\s*[a-zA-Z]{3,})*$/,
   NUMBERS_REGEX: /^\d+$/,
   POSITIVE_NUMBERS_REGEX: /^[1-9]+$/,
   CHARACTERS_REGEX: /^\w*$/,
@@ -262,7 +264,7 @@ export const Validations: ValidationConfig = {
     'Brand Name': [
       Validators.required,
       Validators.maxLength(Consts.NINETY),
-      Validators.minLength(Consts.FIVE),
+      Validators.minLength(Consts.THREE),
     ],
   },
   [Consts.AUX_DEPOT]: {
@@ -480,5 +482,6 @@ export enum StatusCodes {
   Unauthorized = 401,
   Forbidden = 403,
   BadRequest = 404,
+  Conflict = 409,
   InternalServerError = 500,
 }

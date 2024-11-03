@@ -1,4 +1,4 @@
 export interface CategoryArticleModel {
-    id: Number;
-    name: String;
+  id: number;
+  name: string;
 }

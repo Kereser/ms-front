@@ -105,15 +105,15 @@ export class TableComponent implements OnInit, OnChanges {
     });
   }
 
+  updateCurrentPage(page: number) {
+    this.page = page;
+    this.loadData();
+  }
+
   onSort(field: string): void {
     this.direction = this.getReverseSort(this.direction);
     this.setColumn(field);
 
-    this.loadData();
-  }
-
-  onPageChange(page: number | string): void {
-    this.page = page as number;
     this.loadData();
   }
 
@@ -132,21 +132,6 @@ export class TableComponent implements OnInit, OnChanges {
     this.pageSize = parseInt(size);
     this.page = 0;
     this.loadData();
-  }
-
-  getMiddleRange(): (number | string)[] {
-    if (this.validDTO(this.pageDTO)) return [];
-
-    const totalPages = this.pageDTO.totalPages;
-    if (totalPages <= 5) {
-      return this.handleFewPages();
-    } else {
-      return this.handleManyPages();
-    }
-  }
-
-  getDisplayableValue(page: number | string) {
-    return (page as number) + 1;
   }
 
   mouseOverFn(idx: number) {
@@ -184,43 +169,6 @@ export class TableComponent implements OnInit, OnChanges {
 
   private getReverseSort(order: string): Direcitons {
     return order === Direcitons.ASC ? Direcitons.DESC : Direcitons.ASC;
-  }
-
-  private validDTO(pageDTO: any): boolean {
-    return !pageDTO;
-  }
-
-  private handleFewPages(): (number | string)[] {
-    const totalPages = this.pageDTO.totalPages;
-    return Array.from({ length: totalPages }, (_, i) => i);
-  }
-
-  private handleManyPages(): (number | string)[] {
-    const totalPages = this.pageDTO.totalPages;
-    const currentPage = this.pageDTO.currentPage;
-
-    if (currentPage <= 2) {
-      return [0, 1, 2, 3, '...', totalPages - 1];
-    } else if (currentPage >= totalPages - 3) {
-      return [
-        0,
-        '...',
-        totalPages - 4,
-        totalPages - 3,
-        totalPages - 2,
-        totalPages - 1,
-      ];
-    } else {
-      return [
-        0,
-        '...',
-        currentPage - 1,
-        currentPage,
-        currentPage + 1,
-        '...',
-        totalPages - 1,
-      ];
-    }
   }
 
   reloadDashboard() {
