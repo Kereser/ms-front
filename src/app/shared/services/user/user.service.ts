@@ -151,7 +151,7 @@ export class UserService {
   routes: RoutesType = {
     [Consts.AUX_DEPOT]: [Consts.DASHBOARD_ARTICLE_PATH],
     admin: [Consts.CREATE_ARTICLE_PATH],
-    client: [Consts.DASHBOARD_ARTICLE_PATH],
+    client: [Consts.HOME_PATH],
   };
 
   private processToken(token: string) {
