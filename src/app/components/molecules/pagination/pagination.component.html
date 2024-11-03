@@ -1,0 +1,31 @@
+<div class="pagination">
+  <app-naked-button
+    class="pagination__arrow pagination__arrow--first"
+    *ngIf="pageDTO && pageDTO.currentPage > 0"
+    (click)="onPageChange(pageDTO.currentPage - 1)"
+    >←</app-naked-button
+  >
+
+  <span *ngFor="let page of getMiddleRange()">
+    <ng-container *ngIf="page === '...'">
+      <span class="pagination__dots">...</span>
+    </ng-container>
+    <ng-container *ngIf="page !== '...'">
+      <app-naked-button
+        class="pagination__txt"
+        (click)="onPageChange(page)"
+        [ngClass]="{ active: page === pageDTO.currentPage }"
+      >
+        {{ getDisplayableValue(page) }}
+      </app-naked-button>
+    </ng-container>
+  </span>
+
+  <app-naked-button
+    class="pagination__arrow pagination__arrow--last"
+    *ngIf="pageDTO && pageDTO.currentPage < pageDTO.totalPages - 1"
+    (click)="onPageChange(pageDTO.currentPage + 1)"
+  >
+    →
+  </app-naked-button>
+</div>
