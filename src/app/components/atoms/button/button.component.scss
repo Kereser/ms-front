@@ -1,4 +1,4 @@
-@import '../../../styles/variables';
+@import "../../../styles/variables";
 
 *,
 *::before,
@@ -7,33 +7,34 @@
 }
 
 .button {
-    background-color: $purple;
-    color: $white;
-    border-radius: 4px;
-    border: none;
-    font-weight: 400;
+  background-color: $purple;
+  color: $white;
+  border-radius: 4px;
+  border: none;
+  font-weight: 400;
 
-    &:hover {
-        background-color: $purple_hover;
-    }
+  &:hover {
+    background-color: $purple_hover;
+    cursor: pointer;
+  }
 
-    &--l {
-        font-size: $ty-body-l;
-        padding: map-get($btn-l, padding);
-    }
+  &--l {
+    font-size: $ty-body-l;
+    padding: map-get($btn-l, padding);
+  }
 
-    &--m {
-        font-size: $ty-body-s;
-        padding: map-get($btn-m, padding);
-    }
+  &--m {
+    font-size: $ty-body-s;
+    padding: map-get($btn-m, padding);
+  }
 
-    &--s {
-        font-size: $ty-body-s;
-        padding: map-get($btn-s, padding);
-    }
+  &--s {
+    font-size: $ty-body-s;
+    padding: map-get($btn-s, padding);
+  }
 
-    &:disabled {
-        background-color: grey;
-        cursor: not-allowed;
-    }
+  &:disabled {
+    background-color: grey;
+    cursor: not-allowed;
+  }
 }
