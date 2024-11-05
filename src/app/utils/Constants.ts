@@ -99,6 +99,9 @@ export const Consts = {
 
   CREATE: 'create',
   DASHBOARD: 'dashboard',
+  HOME: 'home',
+  CART: 'cart',
+  OVERVIEW: 'overview',
 
   AUTH: 'auth',
   SUPPLY_ARTICLE: 'supplyArticle',
@@ -112,13 +115,17 @@ export const Consts = {
   BY_NAMES_PATH: '/by-names',
   BRAND_PATH: '/brands',
   CREATE_ARTICLE_PATH: '/create/article',
+  USER_PATH: '/user',
+  CART_ID_PATH: '/cartId',
   ARTICLES_PATH: '/articles',
+  ARTICLE_ID_PATH: '/articleId',
   SUPPLY_PATH: '/supply',
   CATEGORIES_PATH: '/categories',
   REDIRECT_DASHBOARD_PATH: '/dashboard',
   DASHBOARD_CATEGORY_PATH: '/dashboard/category',
   DASHBOARD_ARTICLE_PATH: '/dashboard/article',
   HOME_PATH: '/home',
+  CART_OVERVIEW_PATH: '/cart/overview',
 
   FALSE: false,
   TRUE: true,
@@ -154,6 +161,7 @@ export const Consts = {
   WRONG_CREDENTIALS: 'Wrong Credentials',
   UNEXPECTED_ERROR: 'Unexpected error',
   UNAUTHORIZED_USER_ERROR: 'U dont have the role to perform this action.',
+  BAD_REQUEST_MSG: 'Bad request dummy msg',
   EX_MSG: 'Ex msg',
 
   BIG_DECIMAL_REGEX: /^\d+(?:.\d{1,2})?$/,
@@ -481,7 +489,7 @@ export enum ToastTypes {
 export enum StatusCodes {
   Unauthorized = 401,
   Forbidden = 403,
-  BadRequest = 404,
+  BadRequest = 400,
   Conflict = 409,
   InternalServerError = 500,
 }

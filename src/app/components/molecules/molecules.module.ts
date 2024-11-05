@@ -4,10 +4,11 @@ import { DynamicFormComponent } from './dynamic-form/dynamic-form.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AtomsModule } from '../atoms/atoms.module';
 import { PaginationComponent } from './pagination/pagination.component';
+import { CardComponent } from './card/card.component';
 
 @NgModule({
-  declarations: [DynamicFormComponent, PaginationComponent],
+  declarations: [DynamicFormComponent, PaginationComponent, CardComponent],
   imports: [CommonModule, AtomsModule, ReactiveFormsModule],
-  exports: [DynamicFormComponent, PaginationComponent],
+  exports: [DynamicFormComponent, PaginationComponent, CardComponent],
 })
 export class MoleculesModule {}

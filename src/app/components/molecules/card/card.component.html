@@ -1,0 +1,35 @@
+<div class="card">
+  <h2 class="card__title">
+    {{ title }}
+  </h2>
+  <h3 *ngIf="firstInfo" class="card__first-info">
+    {{ firstInfo }}
+  </h3>
+  <div class="card__content">
+    <div class="card__content--column">
+      <p *ngIf="description" class="card__description">
+        {{ description }}
+      </p>
+      <ng-content select="[content-column]"></ng-content>
+    </div>
+    <div class="card__content--row">
+      <ng-content select="[content--row]"></ng-content>
+      <div class="card__content--row--left">
+        <ng-content select="[content--row--left]"></ng-content>
+      </div>
+    </div>
+  </div>
+  <div
+    class="card__footer-options"
+    [ngClass]="{
+      'card__footer-options--left': optionPosition === 'left',
+      'card__footer-options--right': optionPosition === 'right',
+      'card__footer-options--center': optionPosition === 'center'
+    }"
+  >
+    <ng-content select="[option]"></ng-content>
+  </div>
+  <div class="card__extra-info">
+    <ng-content select="[extra-info]"></ng-content>
+  </div>
+</div>

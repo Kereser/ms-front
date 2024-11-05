@@ -28,9 +28,14 @@ const routes: Routes = [
       import('./router/auth/auth.module').then((m) => m.AuthModule),
   },
   {
-    path: 'home',
+    path: Consts.HOME,
     loadChildren: () =>
       import('./router/home/home.module').then((m) => m.HomeModule),
+  },
+  {
+    path: Consts.CART,
+    loadChildren: () =>
+      import('./router/cart/cart.module').then((m) => m.CartModule),
   },
 ];
 

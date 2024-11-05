@@ -26,6 +26,18 @@ describe('CartService', () => {
     expect(service).toBeTruthy();
   });
 
+  it('should sent valid url when deleting an article from cart', () => {
+    service.deleteArticle(Consts.ONE, Consts.TWENTY).subscribe();
+
+    const req = httpClient.expectOne(
+      `${service['baseURL']}/${Consts.ONE}${Consts.ARTICLES_PATH}/${Consts.TWENTY}`
+    );
+    expect(req.request.body).toBeNull();
+    expect(req.request.method).toBe(TypeMethods.DELETE);
+
+    req.flush({});
+  });
+
   it('should use valid body and method to add cart', () => {
     service
       .addArticleToCart({ articleId: Consts.ONE, quantity: Consts.TEN })
