@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ArticleModel } from '@app/shared/models/ArticleModel';
 import { PageDTO } from '@app/shared/models/PageDTO';
 import { ArticleService } from '@app/shared/services/Article/ArticleService';
@@ -34,7 +35,8 @@ export class HomePageComponent implements OnInit {
     private userService: UserService,
     private articleService: ArticleService,
     private cartService: CartService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +65,7 @@ export class HomePageComponent implements OnInit {
   getCategoriesForArticle(articleName: string) {
     return this.articles.content
       .filter((a) => a.name === articleName)
-      .map((a) => a.categories.map((c) => c.name))
+      .map((a) => a.categories.map((c) => ` ${c.name}`))
       .join(', ');
   }
 
@@ -95,6 +97,10 @@ export class HomePageComponent implements OnInit {
         this.handleError(err, article.name);
       },
     });
+  }
+
+  navigateToCart() {
+    this.router.navigate([Consts.CART_OVERVIEW_PATH]);
   }
 
   private handleError(err: HttpErrorResponse, articleName: string) {

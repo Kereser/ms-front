@@ -95,7 +95,7 @@ describe('HomePageComponent', () => {
     const categories = component.getCategoriesForArticle(Consts.ARTICLE);
 
     expect(categories).toBe(
-      `${Consts.CATEGORY_NAMES},${Consts.CATEGORY_NAMES}`
+      ` ${Consts.CATEGORY_NAMES}, ${Consts.CATEGORY_NAMES}`
     );
   });
 
@@ -213,5 +213,15 @@ describe('HomePageComponent', () => {
       ToastTypes.DANGER,
       Consts.EX_MSG
     );
+  });
+
+  it('should navigate to cart', () => {
+    jest.spyOn(component['router'], 'navigate');
+
+    component.navigateToCart();
+
+    expect(component['router'].navigate).toHaveBeenCalledWith([
+      Consts.CART_OVERVIEW_PATH,
+    ]);
   });
 });
