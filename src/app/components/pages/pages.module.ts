@@ -9,6 +9,7 @@ import { OrganismsModule } from '@app/components/organisms/organisms.module';
 import { SharedModule } from '@app/shared/shared.module';
 import { AtomsModule } from '../atoms/atoms.module';
 import { HomePageComponent } from './home-page/home-page.component';
+import { CartPageComponent } from './cart-page/cart-page.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { HomePageComponent } from './home-page/home-page.component';
     CreatePageComponent,
     AuthPageComponent,
     HomePageComponent,
+    CartPageComponent,
   ],
   imports: [
     CommonModule,
@@ -30,6 +32,7 @@ import { HomePageComponent } from './home-page/home-page.component';
     CreatePageComponent,
     AuthPageComponent,
     HomePageComponent,
+    CartPageComponent,
   ],
 })
 export class PagesModule {}
