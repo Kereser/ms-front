@@ -1,0 +1,60 @@
+@import "../../../styles/variables";
+
+.card {
+  padding: 10px 40px 0 40px;
+  border: 1px solid $border;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px 0 $box-shadow;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100%;
+  gap: 10px;
+
+  &:hover {
+    box-shadow: 0 3px 9px 0 $box-shadow;
+  }
+
+  &__title {
+    color: $purple;
+    font-style: italic;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__content--row {
+    display: flex;
+    flex-direction: row;
+    gap: 0 5px;
+
+    &--left {
+      display: flex;
+      margin-left: auto;
+      gap: 5px;
+    }
+  }
+
+  &__content--column {
+    display: flex;
+    flex-direction: column;
+    gap: 5px 0;
+  }
+
+  &__footer-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+
+    &--left {
+      justify-content: flex-end;
+    }
+
+    &--right {
+      justify-content: flex-start;
+    }
+  }
+}
