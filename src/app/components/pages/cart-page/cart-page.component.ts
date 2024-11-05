@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ArticleModel } from '@app/shared/models/ArticleModel';
 import { CartArticleModel } from '@app/shared/models/CartArticleModel';
 import {
   CartService,
