@@ -25,7 +25,15 @@ export class RolesGuard implements CanActivate {
     const routeRoles: string[] = route.data['roles'];
     const currentRole = this.userService.getRoleValue();
 
-    if (currentRole && routeRoles.includes(currentRole)) {
+    if (!this.userService.getTokenFromStorage()) {
+      this.router.navigate([Consts.AUTH_LOGIN_PATH]);
+      return false;
+    }
+
+    if (
+      currentRole &&
+      (routeRoles.includes(currentRole) || currentRole === Consts.ANY_ROLE)
+    ) {
       return true;
     }
 
