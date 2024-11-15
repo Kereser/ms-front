@@ -10,11 +10,19 @@ import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of, throwError } from 'rxjs';
 import { CartArticleModel } from '@app/shared/models/CartArticleModel';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Consts, StatusCodes, ToastTypes } from '@app/utils/Constants';
+import {
+  Consts,
+  Direcitons,
+  StatusCodes,
+  ToastTypes,
+} from '@app/utils/Constants';
+import { RadioButtonComponent } from '@app/components/atoms/radio-button/radio-button.component';
+import { QueryList } from '@angular/core';
 
 describe('CartPageComponent', () => {
   let component: CartPageComponent;
   let fixture: ComponentFixture<CartPageComponent>;
+  let radioButtons: QueryList<RadioButtonComponent>;
 
   let cartService: CartService;
   let toastService: ToastService;
@@ -22,12 +30,13 @@ describe('CartPageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      declarations: [CartPageComponent],
+      declarations: [CartPageComponent, RadioButtonComponent],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CartPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    radioButtons = component.radioButtons;
 
     cartService = TestBed.inject(CartService);
     toastService = TestBed.inject(ToastService);
@@ -152,13 +161,14 @@ describe('CartPageComponent', () => {
       Consts.TWENTY,
       cartArticle.id
     );
+
     expect(toastService.show).toHaveBeenCalledWith(
       ToastTypes.DANGER,
       Consts.BAD_REQUEST_MSG
     );
   });
 
-  it('should correctly form a article categories', () => {
+  it('should correctly format article categories', () => {
     component.cartPageable = {
       content: [
         {
@@ -176,5 +186,131 @@ describe('CartPageComponent', () => {
     const res = component.getCategoriesForArticle(Consts.ARTICLE);
 
     expect(res).toBe(` ${Consts.CATEGORIES}`);
+  });
+
+  it('should get valid article price', () => {
+    const article = {
+      id: Consts.TWENTY,
+      name: Consts.ARTICLE,
+      price: Consts.TEN,
+      cartQuantity: Consts.TEN,
+    } as CartArticleModel;
+
+    const price = component.getArticleCartPrice(article);
+
+    expect(price).toBe(' 100');
+  });
+
+  it('should call resetData on all radio buttons and initialize data on reset', () => {
+    radioButtons.forEach((radioButton) => {
+      jest.spyOn(radioButton, 'resetData');
+    });
+
+    jest.spyOn(component, 'setInitialData');
+
+    jest.spyOn(component, 'loadData');
+    component.onReset();
+
+    radioButtons.forEach((radioButton) => {
+      expect(radioButton.resetData).toHaveBeenCalled();
+    });
+
+    expect(component.setInitialData).toHaveBeenCalled();
+    expect(component.loadData).toHaveBeenCalled();
+  });
+
+  it('should get initial categories', () => {
+    component.cartPageable = {
+      content: [
+        {
+          id: Consts.TWENTY,
+          name: Consts.ARTICLE,
+          categories: [
+            {
+              name: Consts.CATEGORIES,
+            },
+            {
+              name: Consts.ARTICLE,
+            },
+          ],
+        },
+      ],
+    } as PageCartDTO<CartArticleModel>;
+
+    const res = component.getInitialCategories();
+
+    expect(res).toEqual(new Set([Consts.CATEGORIES, Consts.ARTICLE]));
+  });
+
+  it('should get initial brands', () => {
+    component.cartPageable = {
+      content: [
+        {
+          id: Consts.TWENTY,
+          name: Consts.ARTICLE,
+          brand: {
+            name: Consts.BRAND,
+          },
+        },
+      ],
+    } as PageCartDTO<CartArticleModel>;
+
+    const res = component.getInitialBrands();
+
+    expect(res).toEqual(new Set([Consts.BRAND]));
+  });
+
+  it('should filter by category', () => {
+    jest.spyOn(component, 'loadData');
+    component.filterByCategory(Consts.CATEGORIES);
+
+    expect(component.categoryName).toBe(Consts.CATEGORIES);
+    expect(component.loadData).toHaveBeenCalledTimes(Consts.ONE);
+  });
+
+  it('should filter by brand', () => {
+    jest.spyOn(component, 'loadData');
+    component.filterByBrand(Consts.BRAND);
+
+    expect(component.brandName).toBe(Consts.BRAND);
+    expect(component.loadData).toHaveBeenCalledTimes(Consts.ONE);
+  });
+
+  it('should order', () => {
+    jest.spyOn(component, 'loadData');
+
+    component.onSortSelected(Consts.ASC);
+    expect(component.order).toBe(Direcitons.ASC);
+    expect(component.loadData).toHaveBeenCalledTimes(1);
+
+    component.onSortSelected(Consts.DESC);
+    expect(component.order).toBe(Direcitons.DESC);
+    expect(component.loadData).toHaveBeenCalledTimes(2);
+  });
+
+  it('should set initial data', () => {
+    component.setInitialData();
+
+    expect(component.order).toBe(Direcitons.ASC);
+    expect(component.categoryName).toBe(null);
+    expect(component.brandName).toBe(null);
+  });
+
+  it('should update currentPage', () => {
+    jest.spyOn(component, 'loadData');
+
+    component.updateCurrentPage(Consts.TEN);
+
+    expect(component.page).toBe(Consts.TEN);
+    expect(component.loadData).toHaveBeenCalledTimes(1);
+  });
+
+  it('should handle table size', () => {
+    jest.spyOn(component, 'loadData');
+
+    component.handleTableSize(Consts.TEN.toString());
+
+    expect(component.pageSize).toBe(Consts.TEN);
+    expect(component.loadData).toHaveBeenCalledTimes(1);
   });
 });
