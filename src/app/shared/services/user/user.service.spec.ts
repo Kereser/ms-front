@@ -170,4 +170,19 @@ describe('UserService', () => {
     expect(req.request.body).toEqual(formattedEntity);
     req.flush({});
   });
+
+  it('should get role value', () => {
+    jest.spyOn(service, 'getTokenFromStorage').mockReturnValue(auxDepotToken);
+    service['getRoleFromToken'] = jest.fn().mockReturnValue(Consts.AUX_DEPOT);
+
+    service['roleSubject'].next(Consts.CLIENT);
+    let res = service.getRoleValue();
+    expect(service['getRoleFromToken']).toHaveBeenCalledTimes(0);
+    expect(res).toBe(Consts.CLIENT);
+
+    service['roleSubject'].next(null);
+    res = service.getRoleValue();
+    expect(res).toBe(Consts.AUX_DEPOT);
+    expect(service['getRoleFromToken']).toHaveBeenCalledTimes(1);
+  });
 });
