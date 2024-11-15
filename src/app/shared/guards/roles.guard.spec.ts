@@ -43,6 +43,8 @@ describe('RolesGuard', () => {
   });
 
   it('should pass role guard when role in roles', () => {
+    jest.spyOn(userService, 'getTokenFromStorage').mockReturnValue('mockToken');
+
     activatedRoute.data = { roles: [Consts.ADMIN] };
     jest.spyOn(userService, 'getRoleValue').mockReturnValue(Consts.ADMIN);
 
@@ -52,6 +54,8 @@ describe('RolesGuard', () => {
   });
 
   it('should redirect to dashboard if role not in roles', () => {
+    jest.spyOn(userService, 'getTokenFromStorage').mockReturnValue('mockToken');
+
     activatedRoute.data = { roles: [Consts.AUX_DEPOT] };
     jest.spyOn(userService, 'getRoleValue').mockReturnValue(Consts.ADMIN);
     jest.spyOn(guard['router'], 'navigate');
@@ -61,6 +65,18 @@ describe('RolesGuard', () => {
     expect(res).toBeFalsy();
     expect(guard['router'].navigate).toHaveBeenCalledWith([
       Consts.DASHBOARD_CATEGORY_PATH,
+    ]);
+  });
+
+  it('should redirect to login if non authenticated user', () => {
+    jest.spyOn(userService, 'getRoleValue').mockReturnValue(Consts.ADMIN);
+    jest.spyOn(guard['router'], 'navigate');
+    activatedRoute.data = { roles: [Consts.ADMIN] };
+
+    const res = guard.canActivate(activatedRoute);
+    expect(res).toBeFalsy();
+    expect(guard['router'].navigate).toHaveBeenCalledWith([
+      Consts.AUTH_LOGIN_PATH,
     ]);
   });
 });

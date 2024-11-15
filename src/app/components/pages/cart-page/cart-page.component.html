@@ -10,7 +10,38 @@
     <app-button (click)="handleOnLogut()" text="logout" button></app-button>
   </app-header>
   <div class="cart-body">
-    <div>filters for cart</div>
+    <div>
+      <div class="cart-body__filter">
+        <h2 class="cart-body__title">Filter by</h2>
+        <app-radio-button
+          #categoriesRadio
+          title="Categories"
+          [dataArray]="getInitialCategories()"
+          (selected)="filterByCategory($event)"
+        ></app-radio-button>
+        <app-radio-button
+          #brandsRadio
+          title="Brands"
+          [dataArray]="getInitialBrands()"
+          (selected)="filterByBrand($event)"
+        >
+        </app-radio-button>
+      </div>
+      <div class="cart-body__filter">
+        <h2 class="cart-body__title">Order</h2>
+        <app-radio-button
+          #sortRadio
+          title="Sort direction"
+          [dataArray]="getSortDirections()"
+          (selected)="onSortSelected($event)"
+        >
+        </app-radio-button>
+      </div>
+      <div class="cart-body__filter--btn">
+        <app-button text="Reset filters" (click)="onReset()"></app-button>
+      </div>
+    </div>
+
     <div class="card-container">
       <app-card
         class="app-card"
@@ -23,14 +54,29 @@
           <p style="display: inline-block">Categories:</p>
           <span>{{ getCategoriesForArticle(article.name) }}</span>
         </div>
+        <div content-column *ngIf="article.quantity > 0">
+          <h4 style="display: inline-block">Price:</h4>
+          <span> {{ article.price }}</span>
+        </div>
 
-        <div content--row>
+        <div content--row *ngIf="article.quantity > 0">
           <h4>Quantity:</h4>
         </div>
-        <div content--row>
+        <div content--row *ngIf="article.quantity > 0">
           <p>{{ article.cartQuantity }}</p>
         </div>
-        <div content--row>(total: {{ article.quantity }})</div>
+        <div content--row *ngIf="article.quantity > 0">
+          (total: {{ article.quantity }})
+        </div>
+        <div
+          *ngIf="
+            article.quantity === 0 || article.quantity < article.cartQuantity
+          "
+          content--row
+        >
+          <h4>Added quantity is no longer available.</h4>
+        </div>
+
         <div content--row--left>
           <app-naked-button
             class="icon-container"
@@ -41,6 +87,31 @@
         </div>
       </app-card>
     </div>
-    <div>Side panel</div>
+    <div class="cart-body__checkout">
+      <h2>Checkout</h2>
+      <div>
+        <h4 style="display: inline-block">Total price</h4>
+        <span>: ${{ cartPageable && cartPageable.cart.totalPrice }} </span>
+      </div>
+    </div>
+  </div>
+  <div class="cart-options">
+    <div></div>
+    <div class="cart-options__middle">
+      <app-pagination
+        [pageDTO]="cartPageable"
+        (currentPage)="updateCurrentPage($event)"
+      ></app-pagination>
+      <div class="cart-options__middle--left">
+        <p>Page size:</p>
+        <app-custom-dropdown
+          [optionList]="['1', '3', '10']"
+          (optionSelected)="handleTableSize($event)"
+          [tableSize]="pageSize"
+        >
+        </app-custom-dropdown>
+      </div>
+    </div>
+    <div></div>
   </div>
 </app-main-layout>

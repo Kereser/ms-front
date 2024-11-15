@@ -1,0 +1,14 @@
+<div class="filter-group">
+  <h4 class="filter-group__title">{{ title }}</h4>
+  <div *ngFor="let data of dataArray">
+    <label class="filter-group__label">
+      <input
+        class="filter-group__radio-btn"
+        type="radio"
+        [checked]="selectedOption === data"
+        (change)="onCheckboxChange(data)"
+      />
+      {{ data }}
+    </label>
+  </div>
+</div>

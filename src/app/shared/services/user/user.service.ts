@@ -49,7 +49,6 @@ export type RoutesType = {
 })
 export class UserService {
   private roleSubject = new BehaviorSubject<string | null>(null);
-  role$ = this.roleSubject.asObservable();
 
   private baseURL = environment.USER_BASE_URL;
   private AuxDepotURL = this.baseURL + Consts.AUX_DEPOT_PATH;
@@ -105,6 +104,8 @@ export class UserService {
   }
 
   getRoleValue() {
+    console.log(this.roleSubject, 'rolesub val');
+
     return this.roleSubject.value ?? this.getRoleFromToken();
   }
 

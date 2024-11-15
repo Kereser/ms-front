@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DashboardPageComponent } from './dashboard-page.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { Consts } from '../../../../utils/Constants';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { UserService } from '@app/shared/services/user/user.service';
@@ -11,8 +11,10 @@ describe('DashboardPageComponent', () => {
   let component: DashboardPageComponent;
   let fixture: ComponentFixture<DashboardPageComponent>;
   let userService: UserService;
+  let initialData = { [Consts.TYPE]: Consts.TEST_ENTITY } as unknown;
+  let data$Sub = new BehaviorSubject(initialData);
   const routeMock = {
-    data: of({ [Consts.TYPE]: Consts.TEST_ENTITY }),
+    data: data$Sub.asObservable(),
   };
 
   beforeEach(async () => {
@@ -44,5 +46,13 @@ describe('DashboardPageComponent', () => {
     component.logout();
 
     expect(userService.logout).toHaveBeenCalledTimes(1);
+  });
+
+  it('should make empty when data not found', () => {
+    data$Sub.next({});
+
+    component.ngOnInit();
+
+    expect(component.entityType).toBe(Consts.EMPTY);
   });
 });

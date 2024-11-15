@@ -8,6 +8,7 @@ import { FormTextInputComponent } from './text-input/form-text-input.component';
 import { ToastComponent } from './toast/toast.component';
 import { CustomDropdownComponent } from './custom-dropdown/custom-dropdown.component';
 import { ModalComponent } from './modal/modal.component';
+import { RadioButtonComponent } from './radio-button/radio-button.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ModalComponent } from './modal/modal.component';
     ToastComponent,
     CustomDropdownComponent,
     ModalComponent,
+    RadioButtonComponent,
   ],
   imports: [CommonModule, ReactiveFormsModule, SharedModule],
   exports: [
@@ -26,6 +28,7 @@ import { ModalComponent } from './modal/modal.component';
     ToastComponent,
     CustomDropdownComponent,
     ModalComponent,
+    RadioButtonComponent,
   ],
 })
 export class AtomsModule {}

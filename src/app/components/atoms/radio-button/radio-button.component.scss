@@ -1,0 +1,13 @@
+@import "/src/app/styles/variables";
+
+.filter-group {
+  border-radius: 4px;
+  padding: 10px;
+  margin: 0px 0 5px 0;
+  box-shadow: 0px 8px 16px 0px #3e134d12;
+
+  &__radio-btn {
+    accent-color: $purple;
+    margin-top: 8px;
+  }
+}

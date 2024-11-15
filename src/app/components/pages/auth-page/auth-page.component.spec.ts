@@ -3,14 +3,16 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AuthPageComponent } from './auth-page.component';
 import { ActivatedRoute } from '@angular/router';
 import { Consts } from '@app/utils/Constants';
-import { of } from 'rxjs';
 import { SharedModule } from '@app/shared/shared.module';
+import { BehaviorSubject } from 'rxjs';
 
 describe('AuthPageComponent', () => {
   let component: AuthPageComponent;
   let fixture: ComponentFixture<AuthPageComponent>;
+  const initialData = { [Consts.TYPE]: Consts.TEST_ENTITY } as unknown;
+  let data$Sub = new BehaviorSubject(initialData);
   const routeMock = {
-    data: of({ [Consts.TYPE]: Consts.TEST_ENTITY }),
+    data: data$Sub.asObservable(),
   };
 
   beforeEach(async () => {
@@ -49,7 +51,16 @@ describe('AuthPageComponent', () => {
 
     const txt = component.getPathOnAuth();
 
+    expect(component.authType);
     expect(txt).toBe(Consts.AUTH_LOGIN_PATH);
+  });
+
+  it('should change entityType value to empty', () => {
+    data$Sub.next({});
+
+    component.ngOnInit();
+
+    expect(component.authType).toBe(Consts.EMPTY);
   });
 
   it('should navigate to exact path', () => {
