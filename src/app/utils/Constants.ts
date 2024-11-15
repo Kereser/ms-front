@@ -23,12 +23,15 @@ export enum OnChangesType {
 export const Consts = {
   ID: 'id',
 
+  ASC: 'ASC',
+  DESC: 'DESC',
   TYPE_INPUT: 'input',
   TYPE_TEXT: 'text',
   TYPE_DATE: 'date',
   TYPE_PASSWORD: 'password',
   TYPE_SELECT: 'select',
 
+  ANY_ROLE: 'any_role',
   TOKEN: 'token',
   DUMMY_TOKEN: 'AKSJFKL;ASLFJAKLJFKLASFJKLASDFJ0924857.',
   ADMIN: 'admin',
@@ -101,6 +104,7 @@ export const Consts = {
   DASHBOARD: 'dashboard',
   HOME: 'home',
   CART: 'cart',
+  CLIENT: 'client',
   OVERVIEW: 'overview',
 
   AUTH: 'auth',
