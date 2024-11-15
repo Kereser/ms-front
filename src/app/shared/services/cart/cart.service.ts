@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
-import { Consts, Direcitons } from '@app/utils/Constants';
+import { Consts } from '@app/utils/Constants';
 import { PageDTO } from '@app/shared/models/PageDTO';
 import { CartPageable } from '@app/shared/models/CartPageable';
 import { CartArticleModel } from '@app/shared/models/CartArticleModel';
@@ -36,13 +36,20 @@ export class CartService {
     );
   }
 
-  getArticlesForUser(): Observable<PageCartDTO<CartArticleModel>> {
+  getArticlesForUser(
+    page: number,
+    pageSize: number,
+    direction: string,
+    categoryName: string | null,
+    brandName: string | null
+  ): Observable<PageCartDTO<CartArticleModel>> {
     return this.http.get<PageCartDTO<CartArticleModel>>(this.getArticlesURL, {
       params: {
-        page: 0,
-        pageSize: 10,
-        column: 'ksadjkfl',
-        columns: Direcitons.ASC,
+        page,
+        pageSize,
+        direction: direction.toUpperCase(),
+        categoryName: categoryName ?? '',
+        brandName: brandName ?? '',
       },
     });
   }
