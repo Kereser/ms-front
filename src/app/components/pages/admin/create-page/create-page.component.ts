@@ -34,15 +34,14 @@ export class CreatePageComponent implements OnInit, OnDestroy {
   constructor(private route: ActivatedRoute, public userService: UserService) {}
 
   ngOnInit(): void {
-    this.route.data.subscribe((data) => {
+    const route$Subscription = this.route.data.subscribe((data) => {
       this.entityType = data[Consts.TYPE] ?? Consts.EMPTY;
     });
+    this.routeSub.add(route$Subscription);
   }
 
   ngOnDestroy(): void {
-    if (this.routeSub) {
-      this.routeSub.unsubscribe();
-    }
+    this.routeSub.unsubscribe();
   }
 
   logout() {
